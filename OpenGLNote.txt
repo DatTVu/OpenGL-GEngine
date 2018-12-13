@@ -1,0 +1,22 @@
+GLFW: create an OpenGL context to render in
+GLAD: to look up where OpenGL functions locate at
+Core Profile : a small core subset of OpenGL features
+Register the callback functions after we've created
+the window and before the game loop is initiated
+
+glfwPollEvnet: check if any events are triggered
+
+glfwSwapBuffers: will color buffer that has been used to draw
+in during this iteration and show it as output to the screen
+alpha stage: calculate opacity of the object
+after fragment stage, object go through test stage including
+z test, alpha test,blending test.
+
+VBO(vertex buffer objects): high speed memory of GPU desinged to hold information about vertices
+
+VBO has type of GL_ARRAY_BUFFER, bind VBO to GL_ARRAY_BUFFER by glfBindBuffer
+
+glBufferData is a function specifically targeted to copy user-defined data into the currently bound buffer.
+
+shader program: used for rendering. linked version of multiple shaders combined
+all compiled shaders have to be linked to a shader program object

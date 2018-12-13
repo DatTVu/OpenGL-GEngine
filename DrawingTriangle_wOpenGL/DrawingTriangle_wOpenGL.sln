@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DrawingTriangle_wOpenGL", "DrawingTriangle_wOpenGL\DrawingTriangle_wOpenGL.vcxproj", "{A1D9C539-B3C1-4FC6-BB17-97F546B2ACEA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1D9C539-B3C1-4FC6-BB17-97F546B2ACEA}.Debug|x64.ActiveCfg = Debug|x64
+		{A1D9C539-B3C1-4FC6-BB17-97F546B2ACEA}.Debug|x64.Build.0 = Debug|x64
+		{A1D9C539-B3C1-4FC6-BB17-97F546B2ACEA}.Debug|x86.ActiveCfg = Debug|Win32
+		{A1D9C539-B3C1-4FC6-BB17-97F546B2ACEA}.Debug|x86.Build.0 = Debug|Win32
+		{A1D9C539-B3C1-4FC6-BB17-97F546B2ACEA}.Release|x64.ActiveCfg = Release|x64
+		{A1D9C539-B3C1-4FC6-BB17-97F546B2ACEA}.Release|x64.Build.0 = Release|x64
+		{A1D9C539-B3C1-4FC6-BB17-97F546B2ACEA}.Release|x86.ActiveCfg = Release|Win32
+		{A1D9C539-B3C1-4FC6-BB17-97F546B2ACEA}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {06B973F2-7C95-4758-A669-D9861DEB9A23}
+	EndGlobalSection
+EndGlobal
