@@ -1,0 +1,16 @@
+﻿  stdafx.cpp
+  esUtil_win.cpp
+  esUtil.cpp
+  esShader.cpp
+  TextureData.cpp
+  TGA.cpp
+  NFG.cpp
+  Mesh.cpp
+  MemoryOperators.cpp
+  MemoryManager.cpp
+  Math.cpp
+g:\3d-training-2019\framework\utilities\math.cpp(10): warning C4244: 'return': conversion from 'double' to 'GLfloat', possible loss of data
+g:\3d-training-2019\framework\utilities\math.cpp(104): warning C4244: 'return': conversion from 'double' to 'GLfloat', possible loss of data
+g:\3d-training-2019\framework\utilities\math.cpp(208): warning C4244: 'return': conversion from 'double' to 'GLfloat', possible loss of data
+  Generating Code...
+  Utilities.vcxproj -> G:\3d-training-2019\Framework\Debug\Utilities.lib
