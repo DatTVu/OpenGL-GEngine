@@ -17,7 +17,22 @@ GLuint vboId, iboId;
 GLuint textId; // create an id to store texture object
 Shaders myShaders;
 int numIndices;
-glm::mat4 trans = glm::mat4(1.0);
+//glm::mat4 trans = glm::mat4(1.0);
+Matrix transMatrix;
+Matrix WVP;
+Matrix projectionMatrix;
+Vector3 camWorld = Vector3(0.0, 0.0, 3.0);
+Vector3 targetWorld = Vector3(0.0, 0.0, -1.0);
+Camera camera1 = Camera(camWorld, targetWorld);
+//Camera Movement
+int upValue = 0;
+int downValue = 0;
+int leftValue = 0;
+int rightValue = 0;
+float camSpeed = 1.0f;
+
+int turnLeft = 0;
+int turnRight = 0;
 
 int Init ( ESContext *esContext )
 {
@@ -36,7 +51,10 @@ int Init ( ESContext *esContext )
 	textId = textureData.GetTextBufferID();	
 	
 	//set up translational vector
-	trans = glm::translate(trans, glm::vec3(0.5, -1.0, 0.0));
+	//trans = glm::translate(trans, glm::vec3(0.5, -1.0, 0.0));
+	transMatrix.SetTranslation(0.5, -1.0, 0.0);
+	projectionMatrix = projectionMatrix.SetPerspective((float)0.25*3.14, (float)(960/720), (float)0.4, (float)-1.0);
+			
 	//release resource
 	delete(womanMesh1.m_Vertices);
 	womanMesh1.m_Vertices = nullptr;
@@ -89,13 +107,20 @@ void Draw ( ESContext *esContext )
 	}	
 
 	//set up Uniform
+
+	WVP = camera1.CalculateViewMatrix().operator*(projectionMatrix);
+	WVP = transMatrix.operator*(WVP);
 	//texture uniform
 	//int iTextureLoc = glGetUniformLocation(myShaders.program, "textID");
 	//glUniform1i(iTextureLoc, 0);	
 	//translation matrix uniform
-	if (myShaders.translationUniform != -1)
+	/*if (myShaders.translationUniform != -1)
 	{
 		glUniformMatrix4fv(myShaders.translationUniform, 1, GL_FALSE, glm::value_ptr(trans));
+	}*/
+	if (myShaders.translationUniform != -1)
+	{
+		glUniformMatrix4fv(myShaders.translationUniform, 1, GL_FALSE, &WVP.m[0][0]);
 	}
 	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, 0);
 	
@@ -109,20 +134,78 @@ void Draw ( ESContext *esContext )
 }
 
 void Update ( ESContext *esContext, float deltaTime )
-{
-	trans = glm::rotate(trans, (float)deltaTime, glm::vec3(0.0, 1.0, 0.0));
+{	
+	float speed = camSpeed* deltaTime;
+	if (upValue)
+		camera1.MoveStraight(speed);
+	if (downValue)
+		camera1.MoveStraight(-speed);
+	if (leftValue)
+		camera1.MoveSideWay(+speed);
+	if (rightValue)
+		camera1.MoveSideWay(-speed);	
+	if (turnLeft)
+		camera1.RotateAroundY(speed);
+	if (turnRight)
+		camera1.RotateAroundY(-speed);
 }
 
 void Key ( ESContext *esContext, unsigned char key, bool bIsPressed)
 {
-	if (key == VK_UP)
-	trans = glm::translate(trans, glm::vec3(0.0, 0.05, 0.0));
-	if(key == VK_DOWN)
-	trans = glm::translate(trans, glm::vec3(0.0, -0.05, 0.0));
-	if (key == VK_LEFT)
-	trans = glm::translate(trans, glm::vec3(-0.05, 0.0, 0.0));
-	if (key == VK_RIGHT)
-	trans = glm::translate(trans, glm::vec3(0.05, 0.0, 0.0));
+	if (key == VK_UP && bIsPressed == true)
+	{
+		upValue = 1;
+		//camera1.MoveStraight(0.05);
+	}
+	else if (key == VK_UP && bIsPressed == false)
+	{
+		upValue = 0;
+	}
+	if (key == VK_DOWN && bIsPressed == true)
+	{
+		downValue = 1 << 1;
+		//.MoveStraight(-0.05);
+	}
+	else if (key == VK_DOWN && bIsPressed == false)
+	{
+		downValue = 0;
+	}
+	if (key == VK_LEFT && bIsPressed == true)
+	{
+		leftValue = 1 << 2;
+		//.MoveStraight(-0.05);
+	}
+	else if (key == VK_LEFT &&bIsPressed == false)
+	{
+		leftValue = 0;
+	}
+	if (key == VK_RIGHT && bIsPressed == true)
+	{
+		rightValue = 1 << 3;
+		//.MoveStraight(-0.05);
+	}
+	else if (key == VK_RIGHT && bIsPressed == false)
+	{
+		rightValue = 0;
+	}	
+
+	if (key == VK_NUMPAD4 && bIsPressed == true)
+	{
+		turnLeft = 1 << 4;
+	}
+	else if (key == VK_NUMPAD4 && bIsPressed == false)
+	{
+		turnLeft = 0;
+	}
+
+	if (key == VK_NUMPAD6 && bIsPressed == true)
+	{
+		turnRight = 1 << 5;
+	}
+	else if (key == VK_NUMPAD6 && bIsPressed == false)
+	{
+		turnRight = 0;
+	}
 }
 
 void CleanUp()

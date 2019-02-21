@@ -9,3 +9,5 @@
 #include "NFG.h"
 #include "Mesh.h"
 #include "TextureData.h"
+#include "../TrainingFramework/Camera.h"
+#include "../TrainingFramework/Globals.h"
