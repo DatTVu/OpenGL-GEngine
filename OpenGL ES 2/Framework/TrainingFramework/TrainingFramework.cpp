@@ -8,9 +8,6 @@
 #include "Globals.h"
 #include <conio.h>
 #include <iostream>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 using namespace std;
 GLuint vboId, iboId;
@@ -33,6 +30,8 @@ float camSpeed = 1.0f;
 
 int turnLeft = 0;
 int turnRight = 0;
+int turnUp = 0;
+int turnDown = 0;
 
 int Init ( ESContext *esContext )
 {
@@ -108,8 +107,8 @@ void Draw ( ESContext *esContext )
 
 	//set up Uniform
 
-	WVP = camera1.CalculateViewMatrix().operator*(projectionMatrix);
-	WVP = transMatrix.operator*(WVP);
+	WVP = camera1.CalculateViewMatrix() * projectionMatrix;
+	WVP = transMatrix * WVP;
 	//texture uniform
 	//int iTextureLoc = glGetUniformLocation(myShaders.program, "textID");
 	//glUniform1i(iTextureLoc, 0);	
@@ -137,17 +136,45 @@ void Update ( ESContext *esContext, float deltaTime )
 {	
 	float speed = camSpeed* deltaTime;
 	if (upValue)
+	{
 		camera1.MoveStraight(speed);
+		camera1.CalculateWorlMatrixofCam();
+	}
 	if (downValue)
+	{
 		camera1.MoveStraight(-speed);
+		camera1.CalculateWorlMatrixofCam();
+	}
 	if (leftValue)
-		camera1.MoveSideWay(+speed);
+	{
+		camera1.MoveSideWay(speed);
+		camera1.CalculateWorlMatrixofCam();
+	}
 	if (rightValue)
-		camera1.MoveSideWay(-speed);	
+	{
+		camera1.MoveSideWay(-speed);
+		camera1.CalculateWorlMatrixofCam();
+	}
 	if (turnLeft)
+	{
+		camera1.CalculateWorlMatrixofCam();
 		camera1.RotateAroundY(speed);
+	}
 	if (turnRight)
+	{
+		camera1.CalculateWorlMatrixofCam();
 		camera1.RotateAroundY(-speed);
+	}
+	if (turnUp)
+	{
+		camera1.CalculateWorlMatrixofCam();
+		camera1.RotateAroundX(speed);
+	}
+	if (turnDown)
+	{
+		camera1.CalculateWorlMatrixofCam();
+		camera1.RotateAroundX(-speed);
+	}
 }
 
 void Key ( ESContext *esContext, unsigned char key, bool bIsPressed)
@@ -205,6 +232,24 @@ void Key ( ESContext *esContext, unsigned char key, bool bIsPressed)
 	else if (key == VK_NUMPAD6 && bIsPressed == false)
 	{
 		turnRight = 0;
+	}
+
+	if (key == VK_NUMPAD8 && bIsPressed == true)
+	{
+		turnUp = 1 << 6;
+	}
+	else if (key == VK_NUMPAD8 && bIsPressed == false)
+	{
+		turnUp = 0;
+	}
+
+	if (key == VK_NUMPAD2 && bIsPressed == true)
+	{
+		turnDown = 1 << 7;
+	}
+	else if (key == VK_NUMPAD2 && bIsPressed == false)
+	{
+		turnDown = 0;
 	}
 }
 
