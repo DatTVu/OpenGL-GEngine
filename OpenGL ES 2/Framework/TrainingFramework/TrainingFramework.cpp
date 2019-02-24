@@ -36,10 +36,7 @@ int Init ( ESContext *esContext )
 {
 	glClearColor ( 1.0f, 1.0f, 1.0f, 1.0f );
 	glEnable(GL_DEPTH_TEST);
-	//Mesh Data
-	Mesh womanMesh1;
-	womanMesh1.SetUp("../../ResourcesPacket/Models/Woman2.nfg");
-	womanMesh1.LoadVertexData(womanMesh1);
+	Mesh womanMesh1 = Mesh("../../ResourcesPacket/Models/Woman2.nfg");
 	vboId = womanMesh1.GetVboId();
 	iboId = womanMesh1.GetIboId();
 	numIndices = womanMesh1.GetIndicesNum();
@@ -59,6 +56,7 @@ int Init ( ESContext *esContext )
 	delete(womanMesh1.m_Indices);
 	womanMesh1.m_Indices = nullptr;
 	//creation of shaders and program 
+
 	return myShaders.Init("../Resources/Shaders/TriangleShaderVS.vs", "../Resources/Shaders/TriangleShaderFS.fs");
 
 }

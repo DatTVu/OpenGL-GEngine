@@ -5,20 +5,22 @@
 
 class Mesh
 {	
+private:
 	int m_numVertices;
 	int m_numIndices;
 	unsigned int vboId, iboId;
+	void SetUp(char*);
+	void LoadVertexData(Mesh meshObject);
 public:
 	//Members
 	Vertex* m_Vertices;
 	int* m_Indices;
 	//Constructor
 	Mesh();
+	Mesh(char* mfilename);
 	//Destructor
 	~Mesh();
-	//Methods
-	void SetUp(char*);
-	void LoadVertexData(Mesh meshObject);
+	//Methods	
 	unsigned int GetVboId();
 	unsigned int GetIboId();
 	int GetVerticesNum();

@@ -25,7 +25,7 @@ int Shaders::Init(char * fileVertexShader, char * fileFragmentShader)
 	tangentAttribute = glGetAttribLocation(program, "a_tangent");
 	textureAttribute = glGetAttribLocation(program, "a_texCoord");
 	translationUniform = glGetUniformLocation(program, "m4_translation");
-
+	   	 
 	return 0;
 }
 

@@ -14,9 +14,18 @@ Mesh::Mesh()
 	int m_numIndices = 0;
 }
 
+Mesh::Mesh(char* mfilename) {
+	Vertex* m_Vertices = nullptr;
+	int* m_Indices = nullptr;
+	int m_numVertices = 0;
+	int m_numIndices = 0;
+	this->SetUp(mfilename);
+	this->LoadVertexData(*this);
+}
 
 Mesh::~Mesh()
 {
+
 }
 
 void Mesh::SetUp(char* modelPath) {
