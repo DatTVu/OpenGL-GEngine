@@ -59,17 +59,14 @@ Matrix Camera::CalculateViewMatrix() {
 
 void Camera::CalculateWorlMatrixofCam() {
 
-	Matrix inverseCamRotMat;
+	Matrix camRotationMatrix;
 	Vector3 zaxis = (cameraPos - targetPos).Normalize();
 	Vector3 xaxis = (upVector.Cross(zaxis)).Normalize();
 	Vector3 yaxis = (zaxis.Cross(xaxis)).Normalize();
-	inverseCamRotMat.m[0][0] = xaxis.x; inverseCamRotMat.m[0][1] = yaxis.x; inverseCamRotMat.m[0][2] = zaxis.x; inverseCamRotMat.m[0][3] = 0.0;
-	inverseCamRotMat.m[1][0] = xaxis.y; inverseCamRotMat.m[1][1] = yaxis.y; inverseCamRotMat.m[1][2] = zaxis.y; inverseCamRotMat.m[1][3] = 0.0;
-	inverseCamRotMat.m[2][0] = xaxis.z; inverseCamRotMat.m[2][1] = yaxis.z; inverseCamRotMat.m[2][2] = zaxis.z; inverseCamRotMat.m[2][3] = 0.0;
-	inverseCamRotMat.m[3][0] = 0.0; inverseCamRotMat.m[3][1] = 0.0; inverseCamRotMat.m[3][2] = 0.0; inverseCamRotMat.m[3][3] = 1.0;
-
-	Matrix camRotationMatrix;
-	camRotationMatrix = inverseCamRotMat.Transpose();
+	camRotationMatrix.m[0][0] = xaxis.x; camRotationMatrix.m[0][1] = xaxis.y; camRotationMatrix.m[0][2] = xaxis.z; camRotationMatrix.m[0][3] = 0.0;
+	camRotationMatrix.m[1][0] = yaxis.x; camRotationMatrix.m[1][1] = yaxis.y; camRotationMatrix.m[1][2] = yaxis.z; camRotationMatrix.m[1][3] = 0.0;
+	camRotationMatrix.m[2][0] = zaxis.x; camRotationMatrix.m[2][1] = zaxis.y; camRotationMatrix.m[2][2] = zaxis.z; camRotationMatrix.m[2][3] = 0.0;
+	camRotationMatrix.m[3][0] = 0.0; camRotationMatrix.m[3][1] = 0.0; camRotationMatrix.m[3][2] = 0.0; camRotationMatrix.m[3][3] = 1.0;
 	Matrix camTranslationMatrix;
 	camTranslationMatrix.SetTranslation(cameraPos);
 	worldMatrix = camRotationMatrix * camTranslationMatrix;
@@ -94,12 +91,12 @@ void Camera::RotateAroundY(float delTime) {
 	
 	rotationaroundY.SetRotationY(delTime*2.5);
 	Vector4 localNewTarget = localTarget * rotationaroundY;
+		
 	
-	Vector4 im = localNewTarget * worldMatrix;
+	Vector4 im = (localNewTarget * worldMatrix);
 	targetPos.x = im.x;
 	targetPos.y = im.y;
-	targetPos.z = im.z;
-	
+	targetPos.z = im.z;	
 }
 
 void Camera::RotateAroundX(float delTime) {

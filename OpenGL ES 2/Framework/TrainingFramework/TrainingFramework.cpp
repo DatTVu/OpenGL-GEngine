@@ -157,13 +157,14 @@ void Update ( ESContext *esContext, float deltaTime )
 	}
 	if (turnLeft)
 	{
-		camera1.CalculateWorlMatrixofCam();
+		
 		camera1.RotateAroundY(speed);
+			camera1.CalculateWorlMatrixofCam();
 	}
 	if (turnRight)
 	{
-		camera1.CalculateWorlMatrixofCam();
 		camera1.RotateAroundY(-speed);
+		camera1.CalculateWorlMatrixofCam();
 	}
 	if (turnUp)
 	{
