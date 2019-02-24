@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Camera.h"
-
+const double cameraRotationSpeed = 1.5;
+const double cameraMovementSpeed = 2.5;
 
 Camera::Camera(Vector3 worldCamPos, Vector3 worldTargetPos)
 {
@@ -73,13 +74,13 @@ void Camera::CalculateWorlMatrixofCam() {
 }
 
 void Camera::MoveStraight(float delTime) {
-	Vector3 delMove = -(cameraPos - targetPos).Normalize()*delTime*2.5;
+	Vector3 delMove = -(cameraPos - targetPos).Normalize()*delTime*cameraMovementSpeed;
 	cameraPos += delMove;
 	targetPos += delMove;	
 }
 
 void Camera::MoveSideWay(float delTime) {
-	Vector3 delMove = cameraPos.Cross(upVector).Normalize()*delTime*2.5;
+	Vector3 delMove = cameraPos.Cross(upVector).Normalize()*delTime*cameraMovementSpeed;
 	cameraPos += delMove;
 	targetPos += delMove;
 }
@@ -89,7 +90,7 @@ void Camera::RotateAroundY(float delTime) {
 	Vector4 localTarget = Vector4(0, 0, -(cameraPos - targetPos).Length(), 1.0);
 	Matrix rotationaroundY;
 	
-	rotationaroundY.SetRotationY(delTime*2.5);
+	rotationaroundY.SetRotationY(delTime*cameraRotationSpeed);
 	Vector4 localNewTarget = localTarget * rotationaroundY;
 		
 	
@@ -104,7 +105,7 @@ void Camera::RotateAroundX(float delTime) {
 	Vector4 localTarget = Vector4(0, 0, -(cameraPos - targetPos).Length(), 1.0);
 	Matrix rotationaroundX;
 
-	rotationaroundX.SetRotationX(delTime*2.5);
+	rotationaroundX.SetRotationX(delTime*cameraRotationSpeed);
 	Vector4 localNewTarget = localTarget*rotationaroundX;
 
 	Vector4 im = localNewTarget*worldMatrix;

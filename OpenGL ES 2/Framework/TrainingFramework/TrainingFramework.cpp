@@ -26,7 +26,6 @@ int upValue = 0;
 int downValue = 0;
 int leftValue = 0;
 int rightValue = 0;
-float camSpeed = 1.0f;
 
 int turnLeft = 0;
 int turnRight = 0;
@@ -134,47 +133,47 @@ void Draw ( ESContext *esContext )
 
 void Update ( ESContext *esContext, float deltaTime )
 {	
-	float speed = camSpeed* deltaTime;
+	
 	if (upValue)
 	{
-		camera1.MoveStraight(speed);
+		camera1.MoveStraight(deltaTime);
 		camera1.CalculateWorlMatrixofCam();
 	}
 	if (downValue)
 	{
-		camera1.MoveStraight(-speed);
+		camera1.MoveStraight(-deltaTime);
 		camera1.CalculateWorlMatrixofCam();
 	}
 	if (leftValue)
 	{
-		camera1.MoveSideWay(speed);
+		camera1.MoveSideWay(deltaTime);
 		camera1.CalculateWorlMatrixofCam();
 	}
 	if (rightValue)
 	{
-		camera1.MoveSideWay(-speed);
+		camera1.MoveSideWay(-deltaTime);
 		camera1.CalculateWorlMatrixofCam();
 	}
 	if (turnLeft)
 	{
 		
-		camera1.RotateAroundY(speed);
+		camera1.RotateAroundY(deltaTime);
 			camera1.CalculateWorlMatrixofCam();
 	}
 	if (turnRight)
 	{
-		camera1.RotateAroundY(-speed);
+		camera1.RotateAroundY(-deltaTime);
 		camera1.CalculateWorlMatrixofCam();
 	}
 	if (turnUp)
 	{
 		camera1.CalculateWorlMatrixofCam();
-		camera1.RotateAroundX(speed);
+		camera1.RotateAroundX(deltaTime);
 	}
 	if (turnDown)
 	{
 		camera1.CalculateWorlMatrixofCam();
-		camera1.RotateAroundX(-speed);
+		camera1.RotateAroundX(-deltaTime);
 	}
 }
 
@@ -191,7 +190,7 @@ void Key ( ESContext *esContext, unsigned char key, bool bIsPressed)
 	}
 	if (key == VK_DOWN && bIsPressed == true)
 	{
-		downValue = 1 << 1;
+		downValue = 1;
 		//.MoveStraight(-0.05);
 	}
 	else if (key == VK_DOWN && bIsPressed == false)
@@ -200,7 +199,7 @@ void Key ( ESContext *esContext, unsigned char key, bool bIsPressed)
 	}
 	if (key == VK_LEFT && bIsPressed == true)
 	{
-		leftValue = 1 << 2;
+		leftValue = 1;
 		//.MoveStraight(-0.05);
 	}
 	else if (key == VK_LEFT &&bIsPressed == false)
@@ -209,7 +208,7 @@ void Key ( ESContext *esContext, unsigned char key, bool bIsPressed)
 	}
 	if (key == VK_RIGHT && bIsPressed == true)
 	{
-		rightValue = 1 << 3;
+		rightValue = 1;
 		//.MoveStraight(-0.05);
 	}
 	else if (key == VK_RIGHT && bIsPressed == false)
@@ -219,7 +218,7 @@ void Key ( ESContext *esContext, unsigned char key, bool bIsPressed)
 
 	if (key == VK_NUMPAD4 && bIsPressed == true)
 	{
-		turnLeft = 1 << 4;
+		turnLeft = 1;
 	}
 	else if (key == VK_NUMPAD4 && bIsPressed == false)
 	{
@@ -228,7 +227,7 @@ void Key ( ESContext *esContext, unsigned char key, bool bIsPressed)
 
 	if (key == VK_NUMPAD6 && bIsPressed == true)
 	{
-		turnRight = 1 << 5;
+		turnRight = 1;
 	}
 	else if (key == VK_NUMPAD6 && bIsPressed == false)
 	{
@@ -237,7 +236,7 @@ void Key ( ESContext *esContext, unsigned char key, bool bIsPressed)
 
 	if (key == VK_NUMPAD8 && bIsPressed == true)
 	{
-		turnUp = 1 << 6;
+		turnUp = 1;
 	}
 	else if (key == VK_NUMPAD8 && bIsPressed == false)
 	{
@@ -246,7 +245,7 @@ void Key ( ESContext *esContext, unsigned char key, bool bIsPressed)
 
 	if (key == VK_NUMPAD2 && bIsPressed == true)
 	{
-		turnDown = 1 << 7;
+		turnDown = 1;
 	}
 	else if (key == VK_NUMPAD2 && bIsPressed == false)
 	{
