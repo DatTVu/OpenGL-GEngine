@@ -90,7 +90,9 @@ void Camera::RotateAroundY(float delTime) {
 	Vector4 localTarget = Vector4(0, 0, -(cameraPos - targetPos).Length(), 1.0);
 	Matrix rotationaroundY;
 	
-	rotationaroundY.SetRotationY(delTime*cameraRotationSpeed);
+	Vector4 pivot(0, 1, 0, 0);
+	pivot = pivot * viewMatrix;
+	rotationaroundY.SetRotationAngleAxis(delTime*cameraRotationSpeed, pivot.x, pivot.y, pivot.z);
 	Vector4 localNewTarget = localTarget * rotationaroundY;
 		
 	

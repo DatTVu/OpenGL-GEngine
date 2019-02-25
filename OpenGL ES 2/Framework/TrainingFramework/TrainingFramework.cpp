@@ -5,17 +5,28 @@
 #include "../Utilities/utilities.h" // if you use STL, please include this line AFTER all other include
 #include "Vertex.h"
 #include "Shaders.h"
+#include "CubeShaders.h"
 #include "Globals.h"
+#include "ResourceManager.h"
 #include <conio.h>
 #include <iostream>
 
 using namespace std;
 GLuint vboId, iboId;
 GLuint textId; // create an id to store texture object
+
+
+GLuint vboId2, iboId2;
+GLuint textId2; // create an id to store texture object
+
 Shaders myShaders;
+Shaders myShaders2;
+//CubeShaders cubeShaders;
 int numIndices;
+int numIndices2;
 //glm::mat4 trans = glm::mat4(1.0);
 Matrix transMatrix;
+Matrix transMatrix2;
 Matrix WVP;
 Matrix projectionMatrix;
 Vector3 camWorld = Vector3(0.0, 0.0, 3.0);
@@ -36,28 +47,58 @@ int Init ( ESContext *esContext )
 {
 	glClearColor ( 1.0f, 1.0f, 1.0f, 1.0f );
 	glEnable(GL_DEPTH_TEST);
-	Mesh womanMesh1 = Mesh("../../ResourcesPacket/Models/Woman2.nfg");
+	//Mesh Data
+	Mesh womanMesh1 = Mesh("../../ResourcesPacket/Models/Woman1.nfg");
 	vboId = womanMesh1.GetVboId();
 	iboId = womanMesh1.GetIboId();
 	numIndices = womanMesh1.GetIndicesNum();
-	//Texture Data
-	TextureData textureData;
-	textureData.SetUpTextureData("../../ResourcesPacket/Textures/Woman2.tga");
+	//Texture Data	
+	TextureData textureData = TextureData("../../ResourcesPacket/Textures/Woman1.tga");
 	textId = textureData.GetTextBufferID();	
-	
+
 	//set up translational vector
 	//trans = glm::translate(trans, glm::vec3(0.5, -1.0, 0.0));
-	transMatrix.SetTranslation(0.5, -1.0, 0.0);
+	transMatrix.SetTranslation(0.0, -1.0, 0.5);
 	projectionMatrix = projectionMatrix.SetPerspective((float)0.25*3.14, (float)(960/720), (float)0.4, (float)-1.0);
-			
 	//release resource
 	delete(womanMesh1.m_Vertices);
 	womanMesh1.m_Vertices = nullptr;
 	delete(womanMesh1.m_Indices);
 	womanMesh1.m_Indices = nullptr;
-	//creation of shaders and program 
+	//creation of shaders and program
+	myShaders.Init("../Resources/Shaders/TriangleShaderVS.vs", "../Resources/Shaders/TriangleShaderFS.fs");
 
-	return myShaders.Init("../Resources/Shaders/TriangleShaderVS.vs", "../Resources/Shaders/TriangleShaderFS.fs");
+
+	/////////////////
+	ResourceManager::CreateInstance();
+
+	ResourceManager::GetInstance()->LoadData();
+
+	/////////////////
+
+
+
+
+	//Mesh Data
+	Mesh womanMesh2 = Mesh("../../ResourcesPacket/Models/Woman2.nfg");
+	vboId2 = womanMesh2.GetVboId();
+	iboId2 = womanMesh2.GetIboId();
+	numIndices2 = womanMesh2.GetIndicesNum();
+	//Texture Data	
+	TextureData textureData2 = TextureData("../../ResourcesPacket/Textures/Woman2.tga");
+	textId2 = textureData2.GetTextBufferID();
+
+	//set up translational vector
+	//trans = glm::translate(trans, glm::vec3(0.5, -1.0, 0.0));
+	transMatrix2.SetTranslation(0.0, -1.0, -0.5);
+	projectionMatrix = projectionMatrix.SetPerspective((float)0.25*3.14, (float)(960 / 720), (float)0.4, (float)-1.0);
+	//release resource
+	delete(womanMesh2.m_Vertices);
+	womanMesh2.m_Vertices = nullptr;
+	delete(womanMesh2.m_Indices);
+	womanMesh2.m_Indices = nullptr;
+	//creation of shaders and program
+	return myShaders2.Init("../Resources/Shaders/TriangleShaderVS.vs", "../Resources/Shaders/TriangleShaderFS.fs");
 
 }
 
@@ -125,6 +166,69 @@ void Draw ( ESContext *esContext )
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+
+	/////////////////////////////////////////////////////////////////////
+	glBindBuffer(GL_ARRAY_BUFFER, vboId2);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboId2);
+
+	//glActiveTexture(GL_TEXTURE0);
+
+	glBindTexture(GL_TEXTURE_2D, textId2);
+
+	if (myShaders2.positionAttribute != -1)
+	{
+		glEnableVertexAttribArray(myShaders2.positionAttribute);
+		glVertexAttribPointer(myShaders2.positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+	}
+	if (myShaders2.normalAttribute != -1)
+	{
+		glEnableVertexAttribArray(myShaders2.normalAttribute);
+		glVertexAttribPointer(myShaders2.normalAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos);
+	}
+	if (myShaders2.binormalAttribute != -1)
+	{
+		glEnableVertexAttribArray(myShaders2.binormalAttribute);
+		glVertexAttribPointer(myShaders2.binormalAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal);
+	}
+	if (myShaders2.tangentAttribute != -1)
+	{
+		glEnableVertexAttribArray(myShaders2.tangentAttribute);
+		glVertexAttribPointer(myShaders2.tangentAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal + sizebinormal);
+	}
+	if (myShaders2.textureAttribute != -1)
+	{
+		glEnableVertexAttribArray(myShaders2.textureAttribute);
+		glVertexAttribPointer(myShaders2.textureAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal + sizebinormal + sizetangent);
+	}
+
+	//set up Uniform
+
+	WVP = camera1.CalculateViewMatrix() * projectionMatrix;
+	WVP = transMatrix2 * WVP;
+	//texture uniform
+	//int iTextureLoc = glGetUniformLocation(myShaders.program, "textID");
+	//glUniform1i(iTextureLoc, 0);	
+	//translation matrix uniform
+	/*if (myShaders.translationUniform != -1)
+	{
+	glUniformMatrix4fv(myShaders.translationUniform, 1, GL_FALSE, glm::value_ptr(trans));
+	}*/
+	if (myShaders2.translationUniform != -1)
+	{
+		glUniformMatrix4fv(myShaders2.translationUniform, 1, GL_FALSE, &WVP.m[0][0]);
+	}
+	glDrawElements(GL_TRIANGLES, numIndices2, GL_UNSIGNED_INT, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	/////////////////////////////////////////////////////////////////////
+
+
 	
 	eglSwapBuffers ( esContext->eglDisplay, esContext->eglSurface );
 }
@@ -256,6 +360,8 @@ void CleanUp()
 	glDeleteBuffers(1, &vboId);
 	glDeleteBuffers(1, &iboId);
 	glDeleteTextures(1, &textId);
+
+	ResourceManager::DestroyInstance();
 }
 
 int _tmain(int argc, _TCHAR* argv[])

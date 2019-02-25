@@ -6,12 +6,13 @@
 //using namespace std;
 
 
-TextureData::TextureData()
+TextureData::TextureData(char* textPath)
 {
 	width = 0;
 	height = 0;
 	bpp = 0;
 	imageData = nullptr;
+	this->SetUpTextureData(textPath);
 }
 
 

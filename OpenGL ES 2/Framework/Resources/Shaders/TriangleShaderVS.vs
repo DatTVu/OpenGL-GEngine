@@ -9,7 +9,7 @@ uniform mat4 m4_translation;
 varying vec2 textCoord;
 void main()
 {
-vec4 posL = vec4(a_posL, 1.0) ;
+vec4 posL = vec4(a_posL,1.0) ;
 gl_Position = m4_translation* posL;
 textCoord = a_texCoord;
 }

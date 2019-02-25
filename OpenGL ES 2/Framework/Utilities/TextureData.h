@@ -4,10 +4,10 @@ class TextureData
 	int width, height, bpp;
 	unsigned int textId;
 	char* imageData;
-public:
-	TextureData();
-	~TextureData();
 	void SetUpTextureData(char* textPath);
+public:
+	TextureData(char* textPath);
+	~TextureData();	
 	unsigned int GetTextBufferID();
 
 };
