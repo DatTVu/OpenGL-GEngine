@@ -9,10 +9,10 @@ private:
 	int m_numVertices;
 	int m_numIndices;
 	unsigned int vboId, iboId;
-	void SetUp(char*);
+	void SetUp(char* modelPath);
 	void LoadVertexData(Mesh meshObject);
 public:
-	//Members
+	//Members	
 	Vertex* m_Vertices;
 	int* m_Indices;
 	//Constructor
@@ -23,6 +23,7 @@ public:
 	//Methods	
 	unsigned int GetVboId();
 	unsigned int GetIboId();
+	int m_RManagerID; // Mesh ID read from a config file by Resouce Manager
 	int GetVerticesNum();
 	int GetIndicesNum();
 };

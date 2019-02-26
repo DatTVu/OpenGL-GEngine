@@ -13,7 +13,7 @@ public:
 	GLint tangentAttribute;
 	GLint textureAttribute;
 	GLuint translationUniform;
-
+	int m_RmShaderID;
 	int Init(char * fileVertexShader, char * fileFragmentShader);
 	~Shaders();
 };

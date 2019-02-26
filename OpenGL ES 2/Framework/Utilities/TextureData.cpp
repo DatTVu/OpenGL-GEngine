@@ -4,7 +4,9 @@
 #include <iostream>
 
 //using namespace std;
+TextureData::TextureData() {
 
+}
 
 TextureData::TextureData(char* textPath)
 {
@@ -22,7 +24,9 @@ TextureData::~TextureData()
 
 void TextureData::SetUpTextureData(char* textPath) {
 	glGenTextures(1, &textId);
-	glBindTexture(GL_TEXTURE_2D, textId);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textId);	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 

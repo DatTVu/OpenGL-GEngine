@@ -1,13 +1,16 @@
 #pragma once
-
 #include <string>
+#include "../Utilities/Mesh.h"
+#include "../Utilities/TextureData.h"
+#include "Shaders.h"
 using namespace std;
+
 class ResourceManager
 {
 private: 
-	int *modelID, *texture2D_ID, *cubeTexture, *shaderID;
-	string *modelPath, *texture2DPath, *cubeTexturePath, *shaderPath;
-	
+	Mesh* m_RmMesh;	
+	TextureData* m_RmTexture;
+	Shaders* m_RmShaders;
 protected:
 	ResourceManager();
 	~ResourceManager();
@@ -34,9 +37,11 @@ public:
 		}
 	}
 
-	void LoadData();
+	void LoadAndAllocateData();
+	Mesh* GetMeshData();
+	TextureData* GetTextureData();
+	Shaders* GetShaderData();
 
 protected:
 	static ResourceManager * ms_pInstance;
 };
-//...

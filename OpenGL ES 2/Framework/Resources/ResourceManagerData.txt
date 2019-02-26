@@ -1,29 +1,29 @@
 #Models: 2
 ID 0
-FILE Models\Woman1.nfg
+FILE Models/Woman1.nfg
 ID 1
-FILE Models\Woman2.nfg
+FILE Models/Woman2.nfg
 
 #2D Textures: 2
 ID 0
-FILE "Textures\Woman1.tga"
+FILE Textures/Woman1.tga
 TILING CLAMP
 ID 1
-FILE "Textures\Woman2.tga"
+FILE Textures/Woman2.tga
 TILING CLAMP
 
 #Cube Textures: 0
 
 #Shaders: 2
 ID 0
-VS "Shaders\TriangleShaderVS.vs"
-FS "Shaders\TriangleShaderFS.fs"
+VS Shaders/TriangleShaderVS.vs
+FS Shaders/TriangleShaderFS.fs
 STATES 2
 STATE CULLING
 STATE DEPTH_TEST
 ID 1
-VS "Shaders\TriangleShaderVS.vs"
-FS "Shaders\TriangleShaderFS.fs"
+VS Shaders/TriangleShaderVS.vs
+FS Shaders/TriangleShaderFS.fs
 STATES 2
 STATE CULLING
 STATE DEPTH_TEST
