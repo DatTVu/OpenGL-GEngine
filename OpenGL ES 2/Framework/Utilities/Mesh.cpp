@@ -5,7 +5,6 @@
 #include "../Utilities/utilities.h"
 
 using namespace std;
-
 Mesh::Mesh()
 {
 	Vertex* m_Vertices = nullptr;

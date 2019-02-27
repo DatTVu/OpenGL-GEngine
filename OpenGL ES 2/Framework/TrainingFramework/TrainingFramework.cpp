@@ -8,6 +8,8 @@
 #include "CubeShaders.h"
 #include "Globals.h"
 #include "ResourceManager.h"
+#include "SceneManager.h"
+#include "Camera.h"
 #include <conio.h>
 #include <iostream>
 
@@ -22,6 +24,9 @@ int numIndices;
 
 //glm::mat4 trans = glm::mat4(1.0);
 Matrix transMatrix;
+
+const char k_resourceManagerPath[50] = "../Resources/ResourceManagerData.txt";
+const char k_sceneManagerPath[50] = "../Resources/SceneManagerData.txt";
 
 Matrix WVP;
 Matrix projectionMatrix;
@@ -54,7 +59,7 @@ int Init ( ESContext *esContext )
 
 	//set up translational vector
 	//trans = glm::translate(trans, glm::vec3(0.5, -1.0, 0.0));
-	transMatrix.SetTranslation(0.0, -1.0, 0.5);
+	//transMatrix.SetTranslation(0.0, -1.0, 0.5);
 	projectionMatrix = projectionMatrix.SetPerspective((float)0.25*3.14, (float)(960/720), (float)0.4, (float)-1.0);
 	//release resource
 	/*delete[]womanMesh1.m_Vertices;
@@ -62,35 +67,46 @@ int Init ( ESContext *esContext )
 	delete[]womanMesh1.m_Indices;
 	womanMesh1.m_Indices = nullptr;*/
 	//creation of shaders and program
-	
-	
-
-
 	/////////////////
 	ResourceManager::CreateInstance();
 
-	ResourceManager::GetInstance()->LoadAndAllocateData();
+	ResourceManager::GetInstance()->LoadAndAllocateResourceData(k_resourceManagerPath);
 
-	Mesh* womanMesh1 = ResourceManager::GetInstance()->GetMeshData();
+	/*Mesh* womanMesh1 = ResourceManager::GetInstance()->GetMeshData();
 	vboId = womanMesh1[0].GetVboId();
 	iboId = womanMesh1[0].GetIboId();
 	numIndices = womanMesh1[0].GetIndicesNum();
 
 	TextureData* textureData = ResourceManager::GetInstance()->GetTextureData();
-	textId = textureData[0].GetTextBufferID();
+	textId = textureData[0].GetTextBufferID();*/
 
-	ResourceManager::DestroyInstance();
+	SceneManager::CreateInstance();
 
-	return myShaders.Init("../Resources/Shaders/TriangleShaderVS.vs", "../Resources/Shaders/TriangleShaderFS.fs");
+	SceneManager::GetInstance()->LoadAndAllocateSceneData(k_sceneManagerPath);
+	
+	SceneManager::GetInstance()->SetMeshPointerToRM(ResourceManager::GetInstance()->GetMeshData());
+
+	SceneManager::GetInstance()->SetTextPointerToRM(ResourceManager::GetInstance()->GetTextureData());
+
+	SceneManager::GetInstance()->SetShaderPointerToRM(ResourceManager::GetInstance()->GetShaderData());
+	
+	SceneManager::GetInstance()->SetUpMeshforObject();
+
+	SceneManager::GetInstance()->SetUpTextureforObject();
+
+	SceneManager::GetInstance()->SetUpShaderforObject();
+
+	//ResourceManager::DestroyInstance();
+
+	return 0;// myShaders.Init("../Resources/Shaders/TriangleShaderVS.vs", "../Resources/Shaders/TriangleShaderFS.fs");
 	
 }
 
 void Draw ( ESContext *esContext )
 {
+	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-	glUseProgram(myShaders.program);
+	/*glUseProgram(myShaders.program);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vboId);
 
@@ -129,17 +145,18 @@ void Draw ( ESContext *esContext )
 		glEnableVertexAttribArray(myShaders.textureAttribute);
 		glVertexAttribPointer(myShaders.textureAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0+ sizepos + sizenormal + sizebinormal + sizetangent);
 	}	
-
-	//set up Uniform
+	*/
+	//set up Uniform*/
 
 	WVP = camera1.CalculateViewMatrix() * projectionMatrix;
-	WVP = transMatrix * WVP;
+	SceneManager::GetInstance()->Draw(WVP);
+	//WVP = transMatrix * WVP;
 	//texture uniform
 	//int iTextureLoc = glGetUniformLocation(myShaders.program, "textID");
 	//glUniform1i(iTextureLoc, 0);	
 	//translation matrix uniform
 	
-	if (myShaders.translationUniform != -1)
+	/*if (myShaders.translationUniform != -1)
 	{
 		glUniformMatrix4fv(myShaders.translationUniform, 1, GL_FALSE, &WVP.m[0][0]);
 	}
@@ -149,7 +166,7 @@ void Draw ( ESContext *esContext )
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);*/
 	
 	eglSwapBuffers ( esContext->eglDisplay, esContext->eglSurface );
 }
@@ -281,6 +298,7 @@ void CleanUp()
 	glDeleteBuffers(1, &vboId);
 	glDeleteBuffers(1, &iboId);
 	glDeleteTextures(1, &textId);	
+	SceneManager::DestroyInstance();	
 }
 
 int _tmain(int argc, _TCHAR* argv[])

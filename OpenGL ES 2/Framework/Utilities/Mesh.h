@@ -1,5 +1,4 @@
 #pragma once
-#include "utilities.h"
 #include "../TrainingFramework/Vertex.h"
 
 

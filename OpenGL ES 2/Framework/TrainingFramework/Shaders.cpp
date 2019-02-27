@@ -1,6 +1,9 @@
-#include <stdafx.h>
+#include "stdafx.h"
 #include "Shaders.h"
 
+Shaders::Shaders() {
+
+}
 int Shaders::Init(char * fileVertexShader, char * fileFragmentShader)
 {
 	vertexShader = esLoadShader(GL_VERTEX_SHADER, fileVertexShader);

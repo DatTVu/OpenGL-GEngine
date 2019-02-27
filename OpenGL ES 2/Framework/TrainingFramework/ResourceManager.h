@@ -8,9 +8,9 @@ using namespace std;
 class ResourceManager
 {
 private: 
-	Mesh* m_RmMesh;	
-	TextureData* m_RmTexture;
-	Shaders* m_RmShaders;
+	Mesh *m_RmMesh;	
+	TextureData *m_RmTexture;
+	Shaders *m_RmShaders;
 protected:
 	ResourceManager();
 	~ResourceManager();
@@ -37,7 +37,7 @@ public:
 		}
 	}
 
-	void LoadAndAllocateData();
+	void LoadAndAllocateResourceData(const char* resourceManagerPath);
 	Mesh* GetMeshData();
 	TextureData* GetTextureData();
 	Shaders* GetShaderData();

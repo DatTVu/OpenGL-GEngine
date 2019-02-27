@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Camera.h"
+#include "Globals.h"
 const double cameraRotationSpeed = 1.5;
 const double cameraMovementSpeed = 2.5;
 

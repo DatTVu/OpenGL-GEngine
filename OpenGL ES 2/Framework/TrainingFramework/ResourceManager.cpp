@@ -6,8 +6,6 @@
 #include <cstring>
 using namespace std;
 
-#include "ResourceManager.h"
-
 ResourceManager * ResourceManager::ms_pInstance = NULL;
 
 ResourceManager::ResourceManager() {}
@@ -30,10 +28,11 @@ ResourceManager::~ResourceManager() {
 	
 }
 
-void ResourceManager::LoadAndAllocateData() {
+void ResourceManager::LoadAndAllocateResourceData(const char* resourceManagerPath) {
 	
 	FILE* resourceFile;
-	if (fopen_s(&resourceFile, "../Resources/ResourceManagerData.txt", "r") != 0)
+	if (fopen_s(&resourceFile, resourceManagerPath, "r") != 0)
+	//if (fopen_s(&resourceFile, "../Resources/ResourceManagerData.txt", "r") != 0)
 	{
 		cout << " Failed to open Resource Manager Data file" << endl;
 		return;
