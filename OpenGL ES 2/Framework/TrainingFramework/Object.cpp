@@ -44,7 +44,7 @@ void Object::Draw(Matrix mvp) {
 		glVertexAttribPointer(m_objectShader.textureAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal + sizebinormal + sizetangent);
 	}
 
-	/*if (m_objectShader.translationUniform != -1)
+	if (m_objectShader.translationUniform != -1)
 	{
 		Matrix translationMatrix;
 
@@ -53,7 +53,7 @@ void Object::Draw(Matrix mvp) {
 		mvp = translationMatrix * mvp;
 
 		glUniformMatrix4fv(m_objectShader.translationUniform, 1, GL_FALSE, &mvp.m[0][0]);
-	}*/
+	}
 
 	glDrawElements(GL_TRIANGLES, m_objectMesh.GetIndicesNum(), GL_UNSIGNED_INT, 0);
 
@@ -73,5 +73,7 @@ void Object::SetUpTexture(TextureData texture) {
 }
 
 void Object::SetUpShader(Shaders shader) {
-	m_objectShader = shader;
+	strcpy(m_objectShader.fileFS, shader.fileFS);
+	strcpy(m_objectShader.fileVS, shader.fileVS);
+	m_objectShader.Init(m_objectShader.fileVS, m_objectShader.fileFS);
 }

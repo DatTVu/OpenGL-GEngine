@@ -14,16 +14,6 @@
 #include <iostream>
 
 using namespace std;
-GLuint vboId, iboId;
-GLuint textId; // create an id to store texture object
-
-Shaders myShaders;
-
-//CubeShaders cubeShaders;
-int numIndices;
-
-//glm::mat4 trans = glm::mat4(1.0);
-Matrix transMatrix;
 
 const char k_resourceManagerPath[50] = "../Resources/ResourceManagerData.txt";
 const char k_sceneManagerPath[50] = "../Resources/SceneManagerData.txt";
@@ -47,38 +37,14 @@ int turnDown = 0;
 int Init ( ESContext *esContext )
 {
 	glClearColor ( 1.0f, 1.0f, 1.0f, 1.0f );
-	glEnable(GL_DEPTH_TEST);
-	//Mesh Data
-	/*Mesh womanMesh1 = Mesh("../../ResourcesPacket/Models/Woman1.nfg");
-	vboId = womanMesh1.GetVboId();
-	iboId = womanMesh1.GetIboId();
-	numIndices = womanMesh1.GetIndicesNum();*/
-	//Texture Data	
-	/*TextureData textureData = TextureData("../../ResourcesPacket/Textures/Woman1.tga");
-	textId = textureData.GetTextBufferID();	*/
 
-	//set up translational vector
-	//trans = glm::translate(trans, glm::vec3(0.5, -1.0, 0.0));
-	//transMatrix.SetTranslation(0.0, -1.0, 0.5);
+	glEnable(GL_DEPTH_TEST);	
+
 	projectionMatrix = projectionMatrix.SetPerspective((float)0.25*3.14, (float)(960/720), (float)0.4, (float)-1.0);
-	//release resource
-	/*delete[]womanMesh1.m_Vertices;
-	womanMesh1.m_Vertices = nullptr;
-	delete[]womanMesh1.m_Indices;
-	womanMesh1.m_Indices = nullptr;*/
-	//creation of shaders and program
-	/////////////////
+
 	ResourceManager::CreateInstance();
 
 	ResourceManager::GetInstance()->LoadAndAllocateResourceData(k_resourceManagerPath);
-
-	/*Mesh* womanMesh1 = ResourceManager::GetInstance()->GetMeshData();
-	vboId = womanMesh1[0].GetVboId();
-	iboId = womanMesh1[0].GetIboId();
-	numIndices = womanMesh1[0].GetIndicesNum();
-
-	TextureData* textureData = ResourceManager::GetInstance()->GetTextureData();
-	textId = textureData[0].GetTextBufferID();*/
 
 	SceneManager::CreateInstance();
 
@@ -95,78 +61,23 @@ int Init ( ESContext *esContext )
 	SceneManager::GetInstance()->SetUpTextureforObject();
 
 	SceneManager::GetInstance()->SetUpShaderforObject();
+	
+	ResourceManager::DestroyInstance();		
 
-	//ResourceManager::DestroyInstance();
+	return 0;
 
-	return 0;// myShaders.Init("../Resources/Shaders/TriangleShaderVS.vs", "../Resources/Shaders/TriangleShaderFS.fs");
+	
 	
 }
 
 void Draw ( ESContext *esContext )
 {
 	
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	/*glUseProgram(myShaders.program);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vboId);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboId);
-	              
-	glActiveTexture(GL_TEXTURE0);
-
-	glBindTexture(GL_TEXTURE_2D, textId);
-	
-	int iTextureLoc = glGetUniformLocation(myShaders.program, "u_Texture1");
-	
-	glUniform1i(iTextureLoc, 0);	
-
-	if(myShaders.positionAttribute != -1)
-	{
-		glEnableVertexAttribArray(myShaders.positionAttribute);
-		glVertexAttribPointer(myShaders.positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-	}	
-	if (myShaders.normalAttribute != -1)
-	{
-		glEnableVertexAttribArray(myShaders.normalAttribute);
-		glVertexAttribPointer(myShaders.normalAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos);
-	}
-	if (myShaders.binormalAttribute != -1)
-	{
-		glEnableVertexAttribArray(myShaders.binormalAttribute);
-		glVertexAttribPointer(myShaders.binormalAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0+ sizepos + sizenormal);
-	}
-	if (myShaders.tangentAttribute != -1)
-	{
-		glEnableVertexAttribArray(myShaders.tangentAttribute);
-		glVertexAttribPointer(myShaders.tangentAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal + sizebinormal);
-	}
-	if (myShaders.textureAttribute != -1)
-	{
-		glEnableVertexAttribArray(myShaders.textureAttribute);
-		glVertexAttribPointer(myShaders.textureAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0+ sizepos + sizenormal + sizebinormal + sizetangent);
-	}	
-	*/
-	//set up Uniform*/
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 
 	WVP = camera1.CalculateViewMatrix() * projectionMatrix;
-	SceneManager::GetInstance()->Draw(WVP);
-	//WVP = transMatrix * WVP;
-	//texture uniform
-	//int iTextureLoc = glGetUniformLocation(myShaders.program, "textID");
-	//glUniform1i(iTextureLoc, 0);	
-	//translation matrix uniform
-	
-	/*if (myShaders.translationUniform != -1)
-	{
-		glUniformMatrix4fv(myShaders.translationUniform, 1, GL_FALSE, &WVP.m[0][0]);
-	}
-	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, 0);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	glBindTexture(GL_TEXTURE_2D, 0);*/
+	SceneManager::GetInstance()->Draw(WVP);	
 	
 	eglSwapBuffers ( esContext->eglDisplay, esContext->eglSurface );
 }
@@ -221,8 +132,7 @@ void Key ( ESContext *esContext, unsigned char key, bool bIsPressed)
 {
 	if (key == VK_UP && bIsPressed == true)
 	{
-		upValue = 1;
-		//camera1.MoveStraight(0.05);
+		upValue = 1;		
 	}
 	else if (key == VK_UP && bIsPressed == false)
 	{
@@ -230,8 +140,7 @@ void Key ( ESContext *esContext, unsigned char key, bool bIsPressed)
 	}
 	if (key == VK_DOWN && bIsPressed == true)
 	{
-		downValue = 1;
-		//.MoveStraight(-0.05);
+		downValue = 1;		
 	}
 	else if (key == VK_DOWN && bIsPressed == false)
 	{
@@ -239,8 +148,7 @@ void Key ( ESContext *esContext, unsigned char key, bool bIsPressed)
 	}
 	if (key == VK_LEFT && bIsPressed == true)
 	{
-		leftValue = 1;
-		//.MoveStraight(-0.05);
+		leftValue = 1;		
 	}
 	else if (key == VK_LEFT &&bIsPressed == false)
 	{
@@ -248,8 +156,7 @@ void Key ( ESContext *esContext, unsigned char key, bool bIsPressed)
 	}
 	if (key == VK_RIGHT && bIsPressed == true)
 	{
-		rightValue = 1;
-		//.MoveStraight(-0.05);
+		rightValue = 1;		
 	}
 	else if (key == VK_RIGHT && bIsPressed == false)
 	{
@@ -295,9 +202,9 @@ void Key ( ESContext *esContext, unsigned char key, bool bIsPressed)
 
 void CleanUp()
 {
-	glDeleteBuffers(1, &vboId);
-	glDeleteBuffers(1, &iboId);
-	glDeleteTextures(1, &textId);	
+	//glDeleteBuffers(1, &vboId);
+	//glDeleteBuffers(1, &iboId);
+	//glDeleteTextures(1, &textId);	
 	SceneManager::DestroyInstance();	
 }
 
