@@ -53,16 +53,14 @@ int Init ( ESContext *esContext )
 	SceneManager::GetInstance()->SetMeshPointerToRM(ResourceManager::GetInstance()->GetMeshData());
 
 	SceneManager::GetInstance()->SetTextPointerToRM(ResourceManager::GetInstance()->GetTextureData());
-
+		
 	SceneManager::GetInstance()->SetShaderPointerToRM(ResourceManager::GetInstance()->GetShaderData());
 	
 	SceneManager::GetInstance()->SetUpMeshforObject();
 
 	SceneManager::GetInstance()->SetUpTextureforObject();
 
-	SceneManager::GetInstance()->SetUpShaderforObject();
-	
-	ResourceManager::DestroyInstance();		
+	SceneManager::GetInstance()->SetUpShaderforObject();		
 
 	return 0;
 
@@ -205,6 +203,7 @@ void CleanUp()
 	//glDeleteBuffers(1, &vboId);
 	//glDeleteBuffers(1, &iboId);
 	//glDeleteTextures(1, &textId);	
+	ResourceManager::DestroyInstance();
 	SceneManager::DestroyInstance();	
 }
 

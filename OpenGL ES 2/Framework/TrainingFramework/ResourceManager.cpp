@@ -117,7 +117,7 @@ void ResourceManager::LoadAndAllocateResourceData(const char* resourceManagerPat
 		sscanf(limit, "FS %s", &fakepath2, 100);
 		strcat(fspath, fakepath2);
 		cout << fspath << endl;
-		//m_RmShaders[i].Init(vspath, fspath);
+		m_RmShaders[i].Init(vspath, fspath);
 
 		strcpy(m_RmShaders[i].fileVS, vspath);
 		strcpy(m_RmShaders[i].fileFS, fspath);		

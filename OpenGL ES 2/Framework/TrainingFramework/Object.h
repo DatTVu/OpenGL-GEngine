@@ -13,15 +13,10 @@ private:
 	Shaders m_objectShader;
 public:
 	Object();
-	/*Object(int ObjectID, int ObjectModelID,
-	int ObjectTextCount, int* ObjectTextID,
-	int ObjectCubeTextCount, int* ObjectCubeTextID,
-	Vector3 ObjectPosition,	Vector3 ObjectRotation,
-	Vector3 ObjectScale);*/
 	~Object();
 	void SetUpMesh(Mesh mesh);
 	void SetUpTexture(TextureData texture);
-	void SetUpShader(Shaders shader);
+	void SetUpShader(Shaders* shader);
 	void Draw(Matrix mvp);
 	///// Member data//////
 	int m_ObjectID;

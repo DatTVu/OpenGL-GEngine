@@ -94,7 +94,7 @@ void SceneManager::SetUpTextureforObject() {
 void SceneManager::SetUpShaderforObject() {
 	for (int i = 0; i < this->m_SmObjectCount; i++)
 	{
-		m_SmObjectPointer[i].SetUpShader(m_SmObjectShaderPointer[m_SmObjectPointer[i].m_ObjectShaderID]);
+		m_SmObjectPointer[i].SetUpShader(m_SmObjectShaderPointer);
 	}
 }
 

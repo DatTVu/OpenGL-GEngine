@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Object.h"
 #include "../Utilities/utilities.h"
+#include "ResourceManager.h"
 
 Object::Object() {
 }
@@ -10,11 +11,13 @@ Object::~Object()
 }
 
 void Object::Draw(Matrix mvp) {	
+	
 	glUseProgram(m_objectShader.program);
 	glBindBuffer(GL_ARRAY_BUFFER, m_objectMesh.GetVboId());
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_objectMesh.GetIboId());
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_objectText.GetTextBufferID());
+
 	int iTextureLoc = glGetUniformLocation(m_objectShader.program, "u_Texture1");
 	glUniform1i(iTextureLoc, 0);
 
@@ -61,7 +64,8 @@ void Object::Draw(Matrix mvp) {
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);	
+	
 }
 
 void Object::SetUpMesh(Mesh mesh) {
@@ -72,8 +76,6 @@ void Object::SetUpTexture(TextureData texture) {
 	m_objectText = texture;
 }
 
-void Object::SetUpShader(Shaders shader) {
-	strcpy(m_objectShader.fileFS, shader.fileFS);
-	strcpy(m_objectShader.fileVS, shader.fileVS);
-	m_objectShader.Init(m_objectShader.fileVS, m_objectShader.fileFS);
+void Object::SetUpShader(Shaders* shader) {
+	m_objectShader = shader[m_ObjectShaderID];	
 }
