@@ -96,6 +96,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CubeShaders.cpp" />
+    <ClCompile Include="CubeTexture.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="SceneManager.cpp" />
@@ -109,6 +110,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CubeShaders.h" />
+    <ClInclude Include="CubeTexture.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ResourceManager.h" />

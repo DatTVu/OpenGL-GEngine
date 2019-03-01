@@ -19,9 +19,8 @@ int CubeShaders::Init(char * fileVertexShader, char * fileFragmentShader)
 	program = esLoadProgram(vertexShader, fragmentShader);
 
 	//finding location of uniforms / attributes
-	positionAttribute = glGetAttribLocation(program, "a_CubeVertexPos");	
-	translationUniform = glGetUniformLocation(program, "m4_translation");
-
+	iPosVertexLoc = glGetAttribLocation(program, "a_CubeVertexPos");
+	iTransUniformLoc = glGetUniformLocation(program, "u_CubeMVPMatrix");
 	return 0;
 }
 

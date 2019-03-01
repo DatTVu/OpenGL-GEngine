@@ -17,7 +17,6 @@ void Object::Draw(Matrix mvp) {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_objectMesh.GetIboId());
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_objectText.GetTextBufferID());
-
 	int iTextureLoc = glGetUniformLocation(m_objectShader.program, "u_Texture1");
 	glUniform1i(iTextureLoc, 0);
 

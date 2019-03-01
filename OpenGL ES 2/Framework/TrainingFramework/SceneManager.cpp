@@ -35,7 +35,7 @@ void SceneManager::LoadAndAllocateSceneData(const char* scenceManagerDataPath) {
 		fgets(linebuffer, sizeof(linebuffer), sceneFile);
 		sscanf_s(linebuffer, "MODEL %d", &m_SmObjectPointer[i].m_ObjectModelID);
 		fgets(linebuffer, sizeof(linebuffer), sceneFile);
-		sscanf_s(linebuffer, "TEXTURES %d", &m_SmObjectPointer[i].m_ObjectTextCount);
+		sscanf_s(linebuffer, "TEXTURES %d", &m_SmObjectPointer[i].m_ObjectTextCount); //<---------------------------------------------Need to handle multiple textures here 
 		m_SmObjectPointer[i].m_ObjectTextID = new int[m_SmObjectPointer[i].m_ObjectTextCount];
 			for (int j = 0; j < m_SmObjectPointer[i].m_ObjectTextCount; j++) {
 				fgets(linebuffer, sizeof(linebuffer), sceneFile);

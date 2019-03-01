@@ -6,6 +6,7 @@
 #include "Vertex.h"
 #include "Shaders.h"
 #include "CubeShaders.h"
+#include "CubeTexture.h"
 #include "Globals.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
@@ -17,6 +18,9 @@ using namespace std;
 
 const char k_resourceManagerPath[50] = "../Resources/ResourceManagerData.txt";
 const char k_sceneManagerPath[50] = "../Resources/SceneManagerData.txt";
+const char k_cubeTexturePath[75] = "../../ResourcesPacket/Textures/SkyboxTextures/";
+
+GLuint cubeTextID;
 
 Matrix WVP;
 Matrix projectionMatrix;
@@ -33,6 +37,62 @@ int turnLeft = 0;
 int turnRight = 0;
 int turnUp = 0;
 int turnDown = 0;
+
+////////TESTING//////////////////////////
+CubeTexture cubeTexture;
+CubeShaders cubeShader;
+Vertex cubeVerticesData[8];
+unsigned int cubevbo;
+unsigned int cubeibo;
+
+
+
+float skyboxVertices[] = {
+	// positions          
+	-1.0f,  1.0f, -1.0f, 1.0,
+	-1.0f, -1.0f, -1.0f, 1.0,
+	1.0f, -1.0f, -1.0f, 1.0,
+	1.0f, -1.0f, -1.0f, 1.0,
+	1.0f,  1.0f, -1.0f, 1.0,
+	-1.0f,  1.0f, -1.0f, 1.0,
+
+	-1.0f, -1.0f,  1.0f, 1.0,
+	-1.0f, -1.0f, -1.0f, 1.0,
+	-1.0f,  1.0f, -1.0f, 1.0,
+	-1.0f,  1.0f, -1.0f, 1.0,
+	-1.0f,  1.0f,  1.0f, 1.0,
+	-1.0f, -1.0f,  1.0f, 1.0,
+
+	1.0f, -1.0f, -1.0f, 1.0,
+	1.0f, -1.0f,  1.0f, 1.0,
+	1.0f,  1.0f,  1.0f, 1.0,
+	1.0f,  1.0f,  1.0f, 1.0,
+	1.0f,  1.0f, -1.0f, 1.0,
+	1.0f, -1.0f, -1.0f, 1.0,
+
+	-1.0f, -1.0f,  1.0f, 1.0,
+	-1.0f,  1.0f,  1.0f, 1.0,
+	1.0f,  1.0f,  1.0f, 1.0,
+	1.0f,  1.0f,  1.0f, 1.0,
+	1.0f, -1.0f,  1.0f, 1.0,
+	-1.0f, -1.0f,  1.0f, 1.0,
+
+	-1.0f,  1.0f, -1.0f, 1.0,
+	1.0f,  1.0f, -1.0f, 1.0,
+	1.0f,  1.0f,  1.0f, 1.0,
+	1.0f,  1.0f,  1.0f, 1.0,
+	-1.0f,  1.0f,  1.0f, 1.0,
+	-1.0f,  1.0f, -1.0f, 1.0,
+
+	-1.0f, -1.0f, -1.0f, 1.0,
+	-1.0f, -1.0f,  1.0f, 1.0,
+	1.0f, -1.0f, -1.0f, 1.0,
+	1.0f, -1.0f, -1.0f, 1.0,
+	-1.0f, -1.0f,  1.0f, 1.0,
+	1.0f, -1.0f,  1.0f, 1.0
+};
+
+///////TESTING///////////////////////////
 
 int Init ( ESContext *esContext )
 {
@@ -60,12 +120,34 @@ int Init ( ESContext *esContext )
 
 	SceneManager::GetInstance()->SetUpTextureforObject();
 
-	SceneManager::GetInstance()->SetUpShaderforObject();		
+	SceneManager::GetInstance()->SetUpShaderforObject();
+	///////////////////
+	cubeVerticesData[0].pos.x = 1.0f; cubeVerticesData[0].pos.y = -1.0f; cubeVerticesData[0].pos.z = -1.0f;
+	cubeVerticesData[1].pos.x = 1.0f; cubeVerticesData[1].pos.y = -1.0f; cubeVerticesData[1].pos.z = 1.0f;
+	cubeVerticesData[2].pos.x = 1.0f; cubeVerticesData[2].pos.y = 1.0f; cubeVerticesData[2].pos.z = 1.0f;
+	cubeVerticesData[3].pos.x = 1.0f; cubeVerticesData[3].pos.y = 1.0f; cubeVerticesData[3].pos.z = -1.0f;
+	cubeVerticesData[4].pos.x = -1.0f; cubeVerticesData[4].pos.y = 1.0f; cubeVerticesData[4].pos.z = 1.0f;
+	cubeVerticesData[5].pos.x = -1.0f; cubeVerticesData[5].pos.y = -1.0f; cubeVerticesData[5].pos.z = 1.0f;
+	cubeVerticesData[6].pos.x = -1.0f; cubeVerticesData[6].pos.y = 1.0f; cubeVerticesData[6].pos.z = -1.0f;
+	cubeVerticesData[7].pos.x = -1.0f; cubeVerticesData[7].pos.y = -1.0f; cubeVerticesData[7].pos.z = -1.0f;
 
-	return 0;
+	glGenBuffers(1, &cubevbo);
+	glBindBuffer(GL_ARRAY_BUFFER, cubevbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	
-	
+	/*unsigned int indice[] = {0, 1, 3, 3, 2, 1, 4, 5, 6, 6, 7, 5, 2, 3, 4, 4, 6, 3, 0 , 1, 5, 5, 7, 0, 1, 2, 4, 4, 5, 1, 0, 3, 6, 6, 7, 3};
+
+	glGenBuffers(1, &cubeibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indice), indice, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
+
+	//////////////////
+	cubeTexture = CubeTexture(k_cubeTexturePath);
+	cubeShader.Init("../Resources/Shaders/CubeShaderVS.vs", "../Resources/Shaders/CubeShaderFS.fs");
+
+	return 0;	
 }
 
 void Draw ( ESContext *esContext )
@@ -74,8 +156,38 @@ void Draw ( ESContext *esContext )
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 
 	WVP = camera1.CalculateViewMatrix() * projectionMatrix;
+	
+	Matrix trans;
+	trans.SetTranslation(0.0, 0.0, 0.0);
+	WVP = trans * WVP;
+	SceneManager::GetInstance()->Draw(WVP);
 
-	SceneManager::GetInstance()->Draw(WVP);	
+	Matrix scaleCubeMatrix;
+	scaleCubeMatrix.SetScale(50.0, 50.0, 50.0);
+	scaleCubeMatrix = scaleCubeMatrix * WVP;
+
+	glUseProgram(cubeShader.program);
+
+	glBindBuffer(GL_ARRAY_BUFFER, cubevbo);
+
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeibo);
+	
+	int iCubeTextureLoc = glGetUniformLocation(cubeShader.program, "u_samplerCubeMap");
+	glUniform1i(iCubeTextureLoc, 0);
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeTexture.GetCubeTextID());
+
+	glEnableVertexAttribArray(cubeShader.iPosVertexLoc);
+
+	glVertexAttribPointer(cubeShader.iPosVertexLoc, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	
+	glUniformMatrix4fv(cubeShader.iTransUniformLoc, 1, GL_FALSE, &scaleCubeMatrix.m[0][0]);
+	
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	
 	eglSwapBuffers ( esContext->eglDisplay, esContext->eglSurface );
 }

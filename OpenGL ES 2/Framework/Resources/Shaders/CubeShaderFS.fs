@@ -1,4 +1,4 @@
-precision medium float;
+precision mediump float;
 uniform samplerCube u_samplerCubeMap;
 varying vec4 v_pos;
 
