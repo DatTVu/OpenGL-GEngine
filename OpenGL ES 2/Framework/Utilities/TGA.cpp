@@ -166,3 +166,23 @@ char * LoadTGA( const char * szFileName, int * width, int * height, int * bpp )
 
     return pOutBuffer;
 }
+
+char *ExtractFace(char * pSrc, int textureWidth, int textureHeight, int faceWidth, int faceHeight, int offsetX,int offsetY, int bpp) {
+	
+	char *faceOutBuffer = new char[faceWidth*faceHeight*bpp/ 8];		
+
+	int rowSize = faceWidth*3;
+
+	const int yOrigin = offsetY*faceHeight*textureWidth*3;
+
+	const int xOrigin = offsetX*rowSize;
+	
+	for (int i = 0; i < faceHeight; i++)
+	{
+		char* pSrcRow = pSrc+ yOrigin + xOrigin + i*textureWidth*3;
+
+		memcpy(&faceOutBuffer[i*rowSize] , pSrcRow, rowSize);		
+	}	
+
+	return faceOutBuffer;
+}
