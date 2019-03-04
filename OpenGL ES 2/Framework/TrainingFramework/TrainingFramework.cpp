@@ -135,15 +135,7 @@ int Init ( ESContext *esContext )
 	glBindBuffer(GL_ARRAY_BUFFER, cubevbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	/*unsigned int indice[] = {0, 1, 3, 3, 2, 1, 4, 5, 6, 6, 7, 5, 2, 3, 4, 4, 6, 3, 0 , 1, 5, 5, 7, 0, 1, 2, 4, 4, 5, 1, 0, 3, 6, 6, 7, 3};
-
-	glGenBuffers(1, &cubeibo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indice), indice, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
-
-	//////////////////
+	
 	cubeTexture = CubeTexture(k_cubeTexturePath);
 	cubeShader.Init("../Resources/Shaders/CubeShaderVS.vs", "../Resources/Shaders/CubeShaderFS.fs");
 

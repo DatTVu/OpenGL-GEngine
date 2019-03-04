@@ -11,14 +11,13 @@ ResourceManager * ResourceManager::ms_pInstance = NULL;
 ResourceManager::ResourceManager() {}
 
 ResourceManager::~ResourceManager() {
+
 	for (int i = 0; i < sizeof(m_RmMesh) / sizeof(Mesh); i++) {
 		delete[] m_RmMesh[i].m_Vertices;
 		m_RmMesh[i].m_Vertices = nullptr;
 		delete[] m_RmMesh[i].m_Indices;
 		m_RmMesh[i].m_Indices = nullptr;
-	}	///To fix: Memory leaked here 
-
-
+	}	
 	delete[] m_RmMesh;
 	m_RmMesh = nullptr;
 	delete[] m_RmShaders;

@@ -10,7 +10,7 @@ class Object
 private:
 	Mesh m_objectMesh;
 	TextureData m_objectText;
-	Shaders m_objectShader;
+	Shaders* m_objectShader;
 public:
 	Object();
 	~Object();

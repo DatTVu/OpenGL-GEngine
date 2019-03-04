@@ -11,6 +11,17 @@ SceneManager::SceneManager() {}
 
 SceneManager::~SceneManager()
 {
+	for (int i = 0; i < m_SmObjectCount; i++) {
+		
+			delete[] m_SmObjectPointer[i].m_ObjectTextID;	
+			m_SmObjectPointer->m_ObjectTextID = nullptr;
+	}
+	delete[] m_SmObjectMeshPointer;
+	m_SmObjectMeshPointer = nullptr;
+	delete[] m_SmObject2DTexturePointer;
+	m_SmObject2DTexturePointer = nullptr;
+	delete[] m_SmObjectShaderPointer;
+	m_SmObjectShaderPointer = nullptr;
 }
 
 void SceneManager::LoadAndAllocateSceneData(const char* scenceManagerDataPath) {
