@@ -10,6 +10,6 @@ void main()
 	vec4 color2 = texture2D(u_Texture2, textCoord);
 	vec4 color3 = texture2D(u_Texture3, textCoord);
 	vec4 blendcolor = texture2D(u_BlendMap, textCoord);
-	//gl_FragColor = (blendcolor.r * color1+ blendcolor.g* color2 + blendcolor.b* color3)/(blendcolor.r + blendcolor.g +blendcolor.b);
-	gl_FragColor = vec4(0.5, 0.5, 0.5, 1.0);
+	gl_FragColor = (blendcolor.r * color3+ blendcolor.g* color2 + blendcolor.b* color1)/(blendcolor.r + blendcolor.g +blendcolor.b);
+	
 }

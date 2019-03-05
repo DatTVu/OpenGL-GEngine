@@ -24,7 +24,7 @@ const char k_cubeTexturePath[75] = "../../ResourcesPacket/Textures/SkyboxTexture
 char k_grassTexturePath[60] = "../../ResourcesPacket/Textures/Grass.tga";
 char k_dirtTexturePath[60] = "../../ResourcesPacket/Textures/Dirt.tga";
 char k_rockTexturePath[60] = "../../ResourcesPacket/Textures/Rock.tga";
-char k_blendMapTexturePath[60] = "../../ResourcesPacket/Textures/Terrain_blendmap_1.tga";
+char k_blendMapTexturePath[60] = "../../ResourcesPacket/Textures/Terrain_blendmap_2.tga";
 
 GLuint cubeTextID;
 
@@ -105,14 +105,14 @@ TextureData rockTexture;
 TextureData blendMapTexture;
 
 Shaders terrainShader;
-//Vertex cubeVerticesData[8];
+
 unsigned int terrainVbo;
 unsigned int terrainIbo;
 /////////////////////////////////////////////
-int terrainColumn = 50;
-int terrainRow = 50;
-float deltaxTerrain = 0.2;
-float deltazTerrain = 0.2;
+int terrainColumn = 200;
+int terrainRow = 200;
+float deltaxTerrain = 0.05f;
+float deltazTerrain = 0.05f;
 Vector3 terrainCenter;
 Vertex* terrainVertices;
 int terrainVertexCount;
@@ -169,12 +169,12 @@ int Init ( ESContext *esContext )
 	GenerateTriGrid(terrainRow, terrainColumn, deltaxTerrain, deltazTerrain, terrainCenter, terrainVertices, terrainVertexCount, terrainIndice, terrainIndiceCount);
 	glGenBuffers(1, &terrainVbo);
 	glBindBuffer(GL_ARRAY_BUFFER, terrainVbo);
-	glBufferData(GL_ARRAY_BUFFER, 2500*sizeof(Vertex), &terrainVertices[0].pos, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, terrainVertexCount*sizeof(Vertex), &terrainVertices[0].pos, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glGenBuffers(1, &terrainIbo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainVbo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, terrainIndiceCount*sizeof(int*), terrainIndice, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainIbo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, terrainIndiceCount*sizeof(terrainIndice), terrainIndice, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	grassTexture = TextureData(k_grassTexturePath);
@@ -197,13 +197,24 @@ void Draw ( ESContext *esContext )
 	Matrix trans;
 	trans.SetTranslation(0.0, 0.0, 0.0);
 	WVP = trans * WVP;
+
+
+	Matrix scaleTerrainMatrix;
+
+	scaleTerrainMatrix.SetScale(1.0, 1.0, 1.0);
+
+	scaleTerrainMatrix = scaleTerrainMatrix * WVP;
+
 	SceneManager::GetInstance()->Draw(WVP);
 
 	Matrix scaleCubeMatrix;
 
-	scaleCubeMatrix.SetScale(50.0, 50.0, 50.0);
+	scaleCubeMatrix.SetScale(10.0, 10.0, 10.0);
 
 	scaleCubeMatrix = scaleCubeMatrix * WVP;
+
+
+
 
 	glUseProgram(cubeShader.program);
 
@@ -261,16 +272,28 @@ void Draw ( ESContext *esContext )
 		glVertexAttribPointer(terrainShader.textureAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal + sizebinormal + sizetangent);
 	}
 
-	/*glActiveTexture(GL_TEXTURE0);
 
-	glBindTexture(GL_TEXTURE_2D, grassTexture.GetTextBufferID());
+
+
+
+
+	if (terrainShader.translationUniform != -1)
+	{
+		
+		glUniformMatrix4fv(terrainShader.translationUniform, 1, GL_FALSE, &scaleTerrainMatrix.m[0][0]);
+	}
+
+
+	glActiveTexture(GL_TEXTURE0);
+
+	glBindTexture(GL_TEXTURE_2D, rockTexture.GetTextBufferID());
 
 	if (terrainShader.textureUniform1 != -1)
 	{
 		glUniform1i(terrainShader.textureUniform1, 0);
 	}
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glBindTexture(GL_TEXTURE_2D, 0);
 
 	glActiveTexture(GL_TEXTURE1);
 
@@ -280,17 +303,18 @@ void Draw ( ESContext *esContext )
 	{
 		glUniform1i(terrainShader.textureUniform2, 1);
 	}
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glBindTexture(GL_TEXTURE_2D, 0);
 
 	glActiveTexture(GL_TEXTURE2);
 
-	glBindTexture(GL_TEXTURE_2D, rockTexture.GetTextBufferID());
+	glBindTexture(GL_TEXTURE_2D, grassTexture.GetTextBufferID());
 
 	if (terrainShader.textureUniform3 != -1)
 	{
 		glUniform1i(terrainShader.textureUniform3, 2);
 	}
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glBindTexture(GL_TEXTURE_2D, 0);
+
 	glActiveTexture(GL_TEXTURE3);
 
 	glBindTexture(GL_TEXTURE_2D, blendMapTexture.GetTextBufferID());
@@ -299,14 +323,14 @@ void Draw ( ESContext *esContext )
 	{
 		glUniform1i(terrainShader.textureUniform4, 3);
 	}
-	*/
+	
 	glDrawElements(GL_TRIANGLES, terrainIndiceCount, GL_UNSIGNED_INT, 0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	//glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	
 	eglSwapBuffers ( esContext->eglDisplay, esContext->eglSurface );
 }

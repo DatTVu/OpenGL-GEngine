@@ -4,6 +4,7 @@
 
 static void GenerateTriGrid(int numVertRows, int numVertCols, float dx, float dz, const Vector3& center, Vertex*& verts, int& numVerts, GLint*& indices, int& numIndices) {
 	int numVertices = numVertRows*numVertCols;
+	numVerts = numVertices;
 	int numCellRows = numVertRows - 1;
 	int numCellCols = numVertCols - 1;
 
