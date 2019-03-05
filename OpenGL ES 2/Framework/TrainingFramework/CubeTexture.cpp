@@ -29,34 +29,7 @@ void CubeTexture::SetUpCubeTexture(const char* cubeTextPath) {
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_cubeTextId);	
 	char prePath[100];	
 	char* postPath[6] = {"right.tga", "left.tga", "top.tga", "bottom.tga", "back.tga", "front.tga"};
-	/*for (int i = 0; i < 6; i++) {
-		strcpy(prePath, cubeTextPath);
-		strcat(prePath, postPath[i]);
-
-		m_cubePixel[i] = LoadTGA(prePath, &m_width, &m_height, &m_bpp);
-		if (m_bpp == 24) {
-			if (m_cubePixel[i])
-			{
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, m_cubePixel[i]);
-			}
-			else
-			{
-				cout << "Failed to load Cube TGA texture: " << i << endl;
-				return;
-			}
-		}
-		else if (m_bpp == 32) {
-			if (m_cubePixel[i])
-			{
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_cubePixel[i]);
-			}
-			else
-			{
-				cout << "Failed to load Cube TGA texture: " << i << endl;
-				return;
-			}
-		}
-	}*/
+	
 	char *imageData = LoadTGA("../../ResourcesPacket/Textures/envMap.tga", &m_width, &m_height, &m_bpp);
 
 	m_cubePixel[0] = ExtractFace(imageData, m_width, m_height, m_width/4, m_height/3, 2, 1, m_bpp);

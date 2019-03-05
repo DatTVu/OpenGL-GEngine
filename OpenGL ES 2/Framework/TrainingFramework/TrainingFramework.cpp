@@ -11,6 +11,7 @@
 #include "ResourceManager.h"
 #include "SceneManager.h"
 #include "Camera.h"
+#include "TriangleGrid.h"
 #include <conio.h>
 #include <iostream>
 
@@ -19,6 +20,11 @@ using namespace std;
 const char k_resourceManagerPath[50] = "../Resources/ResourceManagerData.txt";
 const char k_sceneManagerPath[50] = "../Resources/SceneManagerData.txt";
 const char k_cubeTexturePath[75] = "../../ResourcesPacket/Textures/SkyboxTextures/";
+
+char k_grassTexturePath[60] = "../../ResourcesPacket/Textures/Grass.tga";
+char k_dirtTexturePath[60] = "../../ResourcesPacket/Textures/Dirt.tga";
+char k_rockTexturePath[60] = "../../ResourcesPacket/Textures/Rock.tga";
+char k_blendMapTexturePath[60] = "../../ResourcesPacket/Textures/Terrain_blendmap_1.tga";
 
 GLuint cubeTextID;
 
@@ -93,6 +99,26 @@ float skyboxVertices[] = {
 };
 
 ///////TESTING///////////////////////////
+TextureData grassTexture;
+TextureData dirtTexture;
+TextureData rockTexture;
+TextureData blendMapTexture;
+
+Shaders terrainShader;
+//Vertex cubeVerticesData[8];
+unsigned int terrainVbo;
+unsigned int terrainIbo;
+/////////////////////////////////////////////
+int terrainColumn = 50;
+int terrainRow = 50;
+float deltaxTerrain = 0.2;
+float deltazTerrain = 0.2;
+Vector3 terrainCenter;
+Vertex* terrainVertices;
+int terrainVertexCount;
+int* terrainIndice;
+int terrainIndiceCount;
+///////////////////////////////////////////////////////
 
 int Init ( ESContext *esContext )
 {
@@ -139,7 +165,26 @@ int Init ( ESContext *esContext )
 	cubeTexture = CubeTexture(k_cubeTexturePath);
 	cubeShader.Init("../Resources/Shaders/CubeShaderVS.vs", "../Resources/Shaders/CubeShaderFS.fs");
 
-	return 0;	
+	///////////////////////////////////////////////////
+	GenerateTriGrid(terrainRow, terrainColumn, deltaxTerrain, deltazTerrain, terrainCenter, terrainVertices, terrainVertexCount, terrainIndice, terrainIndiceCount);
+	glGenBuffers(1, &terrainVbo);
+	glBindBuffer(GL_ARRAY_BUFFER, terrainVbo);
+	glBufferData(GL_ARRAY_BUFFER, 2500*sizeof(Vertex), &terrainVertices[0].pos, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glGenBuffers(1, &terrainIbo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainVbo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, terrainIndiceCount*sizeof(int*), terrainIndice, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	grassTexture = TextureData(k_grassTexturePath);
+	dirtTexture = TextureData(k_dirtTexturePath);
+	rockTexture = TextureData(k_rockTexturePath);
+	blendMapTexture = TextureData(k_blendMapTexturePath);
+	terrainShader.Init("../Resources/Shaders/TriangleShaderVS.vs", "../Resources/Shaders/TerrainGridFS.fs");
+	///////////////////////////////////////////////////
+
+	return 0;
 }
 
 void Draw ( ESContext *esContext )
@@ -155,16 +200,17 @@ void Draw ( ESContext *esContext )
 	SceneManager::GetInstance()->Draw(WVP);
 
 	Matrix scaleCubeMatrix;
+
 	scaleCubeMatrix.SetScale(50.0, 50.0, 50.0);
+
 	scaleCubeMatrix = scaleCubeMatrix * WVP;
 
 	glUseProgram(cubeShader.program);
 
 	glBindBuffer(GL_ARRAY_BUFFER, cubevbo);
-
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeibo);
 	
 	int iCubeTextureLoc = glGetUniformLocation(cubeShader.program, "u_samplerCubeMap");
+
 	glUniform1i(iCubeTextureLoc, 0);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeTexture.GetCubeTextID());
@@ -180,6 +226,87 @@ void Draw ( ESContext *esContext )
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	//////////////////////////////////////////////////////
+
+	glUseProgram(terrainShader.program);
+
+	glBindBuffer(GL_ARRAY_BUFFER, terrainVbo);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainIbo);
+
+	if (terrainShader.positionAttribute != -1)
+	{
+		glEnableVertexAttribArray(terrainShader.positionAttribute);
+		glVertexAttribPointer(terrainShader.positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+	}
+	if (terrainShader.normalAttribute != -1)
+	{
+		glEnableVertexAttribArray(terrainShader.normalAttribute);
+		glVertexAttribPointer(terrainShader.normalAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos);
+	}
+	if (terrainShader.binormalAttribute != -1)
+	{
+		glEnableVertexAttribArray(terrainShader.binormalAttribute);
+		glVertexAttribPointer(terrainShader.binormalAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal);
+	}
+	if (terrainShader.tangentAttribute != -1)
+	{
+		glEnableVertexAttribArray(terrainShader.tangentAttribute);
+		glVertexAttribPointer(terrainShader.tangentAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal + sizebinormal);
+	}
+	if (terrainShader.textureAttribute != -1)
+	{
+		glEnableVertexAttribArray(terrainShader.textureAttribute);
+		glVertexAttribPointer(terrainShader.textureAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal + sizebinormal + sizetangent);
+	}
+
+	/*glActiveTexture(GL_TEXTURE0);
+
+	glBindTexture(GL_TEXTURE_2D, grassTexture.GetTextBufferID());
+
+	if (terrainShader.textureUniform1 != -1)
+	{
+		glUniform1i(terrainShader.textureUniform1, 0);
+	}
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glActiveTexture(GL_TEXTURE1);
+
+	glBindTexture(GL_TEXTURE_2D, dirtTexture.GetTextBufferID());
+
+	if (terrainShader.textureUniform2 != -1)
+	{
+		glUniform1i(terrainShader.textureUniform2, 1);
+	}
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glActiveTexture(GL_TEXTURE2);
+
+	glBindTexture(GL_TEXTURE_2D, rockTexture.GetTextBufferID());
+
+	if (terrainShader.textureUniform3 != -1)
+	{
+		glUniform1i(terrainShader.textureUniform3, 2);
+	}
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glActiveTexture(GL_TEXTURE3);
+
+	glBindTexture(GL_TEXTURE_2D, blendMapTexture.GetTextBufferID());
+
+	if (terrainShader.textureUniform4 != -1)
+	{
+		glUniform1i(terrainShader.textureUniform4, 3);
+	}
+	*/
+	glDrawElements(GL_TRIANGLES, terrainIndiceCount, GL_UNSIGNED_INT, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	//glBindTexture(GL_TEXTURE_2D, 0);
 	
 	eglSwapBuffers ( esContext->eglDisplay, esContext->eglSurface );
 }

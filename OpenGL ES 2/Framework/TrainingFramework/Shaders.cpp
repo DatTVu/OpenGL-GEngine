@@ -22,13 +22,18 @@ int Shaders::Init(char * fileVertexShader, char * fileFragmentShader)
 
 	program = esLoadProgram(vertexShader, fragmentShader);
 
-	//finding location of uniforms / attributes
+	//finding location of attributes
 	positionAttribute = glGetAttribLocation(program, "a_posL");
 	normalAttribute = glGetAttribLocation(program, "a_normal");
 	binormalAttribute = glGetAttribLocation(program, "a_binormal");
 	tangentAttribute = glGetAttribLocation(program, "a_tangent");
 	textureAttribute = glGetAttribLocation(program, "a_texCoord");
-	translationUniform = glGetUniformLocation(program, "m4_translation");
+	//finding location of uniforms 
+	translationUniform = glGetUniformLocation(program, "m4_translation"); //World Matrix Uniform
+	textureUniform1 = glGetUniformLocation(program, "u_Texture1");
+	textureUniform2 = glGetUniformLocation(program, "u_Texture2");
+	textureUniform3 = glGetUniformLocation(program, "u_Texture3");
+	textureUniform4 = glGetUniformLocation(program, "u_BlendMap");
 	   	 
 	return 0;
 }
