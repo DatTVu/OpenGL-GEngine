@@ -13,6 +13,7 @@ public:
 	GLint tangentAttribute;
 	GLint textureAttribute;
 	GLuint translationUniform;
+	GLuint cameraPosUniform;
 	GLuint textureUniform1;
 	GLuint textureUniform2;
 	GLuint textureUniform3;

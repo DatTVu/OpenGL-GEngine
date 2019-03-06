@@ -117,3 +117,7 @@ void Camera::RotateAroundX(float delTime) {
 	targetPos.z = im.z;
 	
 }
+
+Vector3 Camera::GetPos() {
+	return cameraPos;
+}

@@ -97,6 +97,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CubeShaders.cpp" />
     <ClCompile Include="CubeTexture.cpp" />
+    <ClCompile Include="Heightmap.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="SceneManager.cpp" />
@@ -113,6 +114,7 @@
     <ClInclude Include="CubeShaders.h" />
     <ClInclude Include="CubeTexture.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="Heightmap.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="SceneManager.h" />
@@ -123,6 +125,9 @@
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Resources\Shaders\CubeShaderFS.fs" />
+    <None Include="..\Resources\Shaders\CubeShaderVS.vs" />
+    <None Include="..\Resources\Shaders\TerrainGridFS.fs" />
     <None Include="..\Resources\Shaders\TriangleShaderFS.fs" />
     <None Include="..\Resources\Shaders\TriangleShaderVS.vs" />
     <None Include="..\Readme.doc" />

@@ -14,6 +14,7 @@
 #include "TriangleGrid.h"
 #include <conio.h>
 #include <iostream>
+#include "Heightmap.h"
 
 using namespace std;
 
@@ -24,7 +25,7 @@ const char k_cubeTexturePath[75] = "../../ResourcesPacket/Textures/SkyboxTexture
 char k_grassTexturePath[60] = "../../ResourcesPacket/Textures/Grass.tga";
 char k_dirtTexturePath[60] = "../../ResourcesPacket/Textures/Dirt.tga";
 char k_rockTexturePath[60] = "../../ResourcesPacket/Textures/Rock.tga";
-char k_blendMapTexturePath[60] = "../../ResourcesPacket/Textures/Terrain_blendmap_2.tga";
+char k_blendMapTexturePath[75] = "../../ResourcesPacket/Textures/Terrain_blendmap_1.tga";
 
 GLuint cubeTextID;
 
@@ -105,12 +106,13 @@ TextureData rockTexture;
 TextureData blendMapTexture;
 
 Shaders terrainShader;
+Heightmap mHeightmap;
 
 unsigned int terrainVbo;
 unsigned int terrainIbo;
 /////////////////////////////////////////////
-int terrainColumn = 200;
-int terrainRow = 200;
+int terrainColumn = 128;
+int terrainRow = 128;
 float deltaxTerrain = 0.05f;
 float deltazTerrain = 0.05f;
 Vector3 terrainCenter;
@@ -166,7 +168,15 @@ int Init ( ESContext *esContext )
 	cubeShader.Init("../Resources/Shaders/CubeShaderVS.vs", "../Resources/Shaders/CubeShaderFS.fs");
 
 	///////////////////////////////////////////////////
+	mHeightmap.loadRAW(terrainRow, terrainColumn, "../../ResourcesPacket/Textures/heightmap.raw", 0.25f, -10.0f);
 	GenerateTriGrid(terrainRow, terrainColumn, deltaxTerrain, deltazTerrain, terrainCenter, terrainVertices, terrainVertexCount, terrainIndice, terrainIndiceCount);
+	for (int i = 0; i < terrainRow; i++) {
+		for (int j = 0; j < terrainColumn; j++) {
+			int index = i* terrainColumn + j;
+			terrainVertices[index].pos.y = mHeightmap(i, j)/25;
+		}
+	}
+	
 	glGenBuffers(1, &terrainVbo);
 	glBindBuffer(GL_ARRAY_BUFFER, terrainVbo);
 	glBufferData(GL_ARRAY_BUFFER, terrainVertexCount*sizeof(Vertex), &terrainVertices[0].pos, GL_STATIC_DRAW);
@@ -181,7 +191,7 @@ int Init ( ESContext *esContext )
 	dirtTexture = TextureData(k_dirtTexturePath);
 	rockTexture = TextureData(k_rockTexturePath);
 	blendMapTexture = TextureData(k_blendMapTexturePath);
-	terrainShader.Init("../Resources/Shaders/TriangleShaderVS.vs", "../Resources/Shaders/TerrainGridFS.fs");
+	terrainShader.Init("../Resources/Shaders/TriangleShaderVS.vs", "../Resources/Shaders/TerrainGridFS.fs");	
 	///////////////////////////////////////////////////
 
 	return 0;
@@ -271,19 +281,11 @@ void Draw ( ESContext *esContext )
 		glEnableVertexAttribArray(terrainShader.textureAttribute);
 		glVertexAttribPointer(terrainShader.textureAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal + sizebinormal + sizetangent);
 	}
-
-
-
-
-
-
 	if (terrainShader.translationUniform != -1)
 	{
 		
 		glUniformMatrix4fv(terrainShader.translationUniform, 1, GL_FALSE, &scaleTerrainMatrix.m[0][0]);
 	}
-
-
 	glActiveTexture(GL_TEXTURE0);
 
 	glBindTexture(GL_TEXTURE_2D, rockTexture.GetTextBufferID());
@@ -292,9 +294,6 @@ void Draw ( ESContext *esContext )
 	{
 		glUniform1i(terrainShader.textureUniform1, 0);
 	}
-
-	//glBindTexture(GL_TEXTURE_2D, 0);
-
 	glActiveTexture(GL_TEXTURE1);
 
 	glBindTexture(GL_TEXTURE_2D, dirtTexture.GetTextBufferID());
@@ -303,8 +302,6 @@ void Draw ( ESContext *esContext )
 	{
 		glUniform1i(terrainShader.textureUniform2, 1);
 	}
-	//glBindTexture(GL_TEXTURE_2D, 0);
-
 	glActiveTexture(GL_TEXTURE2);
 
 	glBindTexture(GL_TEXTURE_2D, grassTexture.GetTextBufferID());
@@ -313,8 +310,6 @@ void Draw ( ESContext *esContext )
 	{
 		glUniform1i(terrainShader.textureUniform3, 2);
 	}
-	//glBindTexture(GL_TEXTURE_2D, 0);
-
 	glActiveTexture(GL_TEXTURE3);
 
 	glBindTexture(GL_TEXTURE_2D, blendMapTexture.GetTextBufferID());
@@ -322,6 +317,9 @@ void Draw ( ESContext *esContext )
 	if (terrainShader.textureUniform4 != -1)
 	{
 		glUniform1i(terrainShader.textureUniform4, 3);
+	}
+	if (terrainShader.cameraPosUniform != -1) {
+		glUniform4f(terrainShader.cameraPosUniform, camera1.GetPos().x, camera1.GetPos().y, camera1.GetPos().z, 1.0);
 	}
 	
 	glDrawElements(GL_TRIANGLES, terrainIndiceCount, GL_UNSIGNED_INT, 0);
