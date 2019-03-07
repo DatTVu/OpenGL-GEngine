@@ -2,7 +2,9 @@
 #include "Object.h"
 #include "../Utilities/utilities.h"
 #include "ResourceManager.h"
+#include <string>
 
+using namespace std;
 Object::Object() {
 	
 }
@@ -11,15 +13,13 @@ Object::~Object()
 {
 }
 
-void Object::Draw(Matrix mvp) {	
+void Object::Draw(Matrix mvp, float time) {	
 	
 	glUseProgram(m_objectShader->program);
 	glBindBuffer(GL_ARRAY_BUFFER, m_objectMesh.GetVboId());
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_objectMesh.GetIboId());
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_objectText.GetTextBufferID());
-	int iTextureLoc = glGetUniformLocation(m_objectShader->program, "u_Texture1");
-	glUniform1i(iTextureLoc, 0);
+	
+	
 
 	if (m_objectShader->positionAttribute != -1)
 	{
@@ -51,11 +51,31 @@ void Object::Draw(Matrix mvp) {
 	{
 		Matrix translationMatrix;
 
+		Matrix scaleMatrix;
+
+		scaleMatrix.SetScale(m_ObjectScale.x, m_ObjectScale.y, m_ObjectScale.z);
+
 		translationMatrix.SetTranslation(m_ObjectPosition.x, m_ObjectPosition.y, m_ObjectPosition.z);
 
-		mvp = translationMatrix * mvp;
+		Matrix worldMatrix = translationMatrix* scaleMatrix * mvp;
 
-		glUniformMatrix4fv(m_objectShader->translationUniform, 1, GL_FALSE, &mvp.m[0][0]);
+		glUniformMatrix4fv(m_objectShader->translationUniform, 1, GL_FALSE, &worldMatrix.m[0][0]);
+	}
+
+	if (m_objectShader->timeUniform != -1) {
+		glUniform1f(m_objectShader->timeUniform, time);
+	}
+
+	for (int i = 0; i < m_ObjectTextCount; i++) {
+		glActiveTexture(GL_TEXTURE0+i);
+		string tempPath = "u_Texture" + to_string(i);
+		glBindTexture(GL_TEXTURE_2D, m_objectText[i].GetTextBufferID());
+		int iTextureLoc = glGetUniformLocation(m_objectShader->program, &tempPath[0]);
+		if (iTextureLoc != -1)
+		{
+			glUniform1i(iTextureLoc, 0 + i);
+		}
+		
 	}
 
 	glDrawElements(GL_TRIANGLES, m_objectMesh.GetIndicesNum(), GL_UNSIGNED_INT, 0);
@@ -72,8 +92,12 @@ void Object::SetUpMesh(Mesh mesh) {
 	m_objectMesh = mesh;	
 }
 
-void Object::SetUpTexture(TextureData texture) {
-	m_objectText = texture;
+void Object::SetUpTexture(TextureData* texture) {
+	m_objectText = new TextureData[m_ObjectTextCount];
+	for (int i = 0; i < m_ObjectTextCount; i++)
+	{
+		m_objectText[i] = texture[m_ObjectTextID[i]];
+	}
 }
 
 void Object::SetUpShader(Shaders* shader) {

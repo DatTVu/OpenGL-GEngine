@@ -1,20 +1,33 @@
-#Models: 2
+#Models: 4
 ID 0
 FILE Models/Woman1.nfg
 ID 1
 FILE Models/Woman2.nfg
+ID 2
+FILE Models/fire.nfg
+ID 3
+FILE Models/Bila.nfg
 
-#2D Textures: 2
+#2D Textures: 5
 ID 0
 FILE Textures/Woman1.tga
 TILING CLAMP
 ID 1
 FILE Textures/Woman2.tga
 TILING CLAMP
+ID 2
+FILE Textures/fire3.tga
+TILING CLAMP
+ID 3
+FILE Textures/DisplacementMap.tga
+TILING CLAMP
+ID 4
+FILE Textures/fire_mask.tga
+TILING CLAMP
 
 #Cube Textures: 0
 
-#Shaders: 2
+#Shaders: 3
 ID 0
 VS Shaders/TriangleShaderVS.vs
 FS Shaders/TriangleShaderFS.fs
@@ -24,6 +37,12 @@ STATE DEPTH_TEST
 ID 1
 VS Shaders/TriangleShaderVS.vs
 FS Shaders/TriangleShaderFS.fs
+STATES 2
+STATE CULLING
+STATE DEPTH_TEST
+ID 2
+VS Shaders/FireEffectVS.vs
+FS Shaders/FireEffectFS.fs
 STATES 2
 STATE CULLING
 STATE DEPTH_TEST

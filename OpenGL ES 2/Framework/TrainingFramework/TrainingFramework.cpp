@@ -126,7 +126,11 @@ int Init ( ESContext *esContext )
 {
 	glClearColor ( 1.0f, 1.0f, 1.0f, 1.0f );
 
-	glEnable(GL_DEPTH_TEST);	
+	glEnable(GL_DEPTH_TEST);
+
+	glEnable(GL_BLEND);
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	projectionMatrix = projectionMatrix.SetPerspective((float)0.25*3.14, (float)(960/720), (float)0.4, (float)-1.0);
 
@@ -223,16 +227,15 @@ void Draw ( ESContext *esContext )
 
 	scaleCubeMatrix = scaleCubeMatrix * WVP;
 
-
-
-
 	glUseProgram(cubeShader.program);
 
 	glBindBuffer(GL_ARRAY_BUFFER, cubevbo);
+
+	glActiveTexture(GL_TEXTURE10);
 	
 	int iCubeTextureLoc = glGetUniformLocation(cubeShader.program, "u_samplerCubeMap");
 
-	glUniform1i(iCubeTextureLoc, 0);
+	glUniform1i(iCubeTextureLoc, 10);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeTexture.GetCubeTextID());
 
@@ -335,7 +338,8 @@ void Draw ( ESContext *esContext )
 
 void Update ( ESContext *esContext, float deltaTime )
 {	
-	
+	SceneManager::GetInstance()->UpDateTimeUniform(deltaTime);
+
 	if (upValue)
 	{
 		camera1.MoveStraight(deltaTime);

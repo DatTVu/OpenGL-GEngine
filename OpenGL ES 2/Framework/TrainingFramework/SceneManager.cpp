@@ -32,7 +32,7 @@ void SceneManager::LoadAndAllocateSceneData(const char* scenceManagerDataPath) {
 		return;
 	}
 	/////////
-	char linebuffer[100];		
+	char linebuffer[100];
 	/////////
 
 	fgets(linebuffer, sizeof(linebuffer), sceneFile);
@@ -98,7 +98,7 @@ void SceneManager::SetUpMeshforObject() {
 void SceneManager::SetUpTextureforObject() {
 	for (int i = 0; i < this->m_SmObjectCount; i++)
 	{
-		m_SmObjectPointer[i].SetUpTexture(m_SmObject2DTexturePointer[m_SmObjectPointer[i].m_ObjectTextID[0]]); /////hardcode for now
+		m_SmObjectPointer[i].SetUpTexture(m_SmObject2DTexturePointer);
 	}
 }
 
@@ -112,6 +112,14 @@ void SceneManager::SetUpShaderforObject() {
 void SceneManager::Draw(Matrix mvp) {
 	for (int i = 0; i < this->m_SmObjectCount; i++)
 	{		
-		m_SmObjectPointer[i].Draw(mvp);
+		m_SmObjectPointer[i].Draw(mvp, m_TimeUniform);
 	}
+}
+
+void SceneManager::UpDateTimeUniform(float time) {
+	m_TimeUniform += time;
+}
+
+float SceneManager::GetTimeUniform(){
+	return m_TimeUniform;
 }

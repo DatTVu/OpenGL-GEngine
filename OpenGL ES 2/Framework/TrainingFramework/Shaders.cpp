@@ -30,11 +30,13 @@ int Shaders::Init(char * fileVertexShader, char * fileFragmentShader)
 	textureAttribute = glGetAttribLocation(program, "a_texCoord");
 	//finding location of uniforms 
 	translationUniform = glGetUniformLocation(program, "m4_translation"); //World Matrix Uniform
+	textureUniform0 = glGetUniformLocation(program, "u_Texture0");
 	textureUniform1 = glGetUniformLocation(program, "u_Texture1");
 	textureUniform2 = glGetUniformLocation(program, "u_Texture2");
 	textureUniform3 = glGetUniformLocation(program, "u_Texture3");
 	textureUniform4 = glGetUniformLocation(program, "u_BlendMap");
 	cameraPosUniform = glGetUniformLocation(program, "u_camPos");
+	timeUniform = glGetUniformLocation(program, "u_Time");
 	return 0;
 }
 

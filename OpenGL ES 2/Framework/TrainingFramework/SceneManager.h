@@ -11,6 +11,7 @@ private:
 	TextureData *m_SmObject2DTexturePointer;
 	Shaders* m_SmObjectShaderPointer;
 	int m_SmObjectCount;
+	float m_TimeUniform=0.0f;
 	////////////////////	
 protected:	
 	SceneManager();
@@ -46,6 +47,9 @@ public:
 	void SetUpTextureforObject();
 	void SetUpShaderforObject();
 	void Draw(Matrix mvp);
+	void UpDateTimeUniform(float dtime);
+	float GetTimeUniform();
+
 protected:
 	static SceneManager * ms_SceneInstance;
 };

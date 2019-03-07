@@ -9,15 +9,17 @@ class Object
 {	
 private:
 	Mesh m_objectMesh;
-	TextureData m_objectText;
+	//TextureData* m_objectText;
 	Shaders* m_objectShader;
 public:
 	Object();
 	~Object();
 	void SetUpMesh(Mesh mesh);
-	void SetUpTexture(TextureData texture);
+	void SetUpTexture(TextureData* texture);
 	void SetUpShader(Shaders* shader);
-	void Draw(Matrix mvp);
+	void Draw(Matrix mvp, float time);
+	///////////////////////
+	TextureData* m_objectText;
 	///// Member data//////
 	int m_ObjectID;
 	int m_ObjectModelID;
