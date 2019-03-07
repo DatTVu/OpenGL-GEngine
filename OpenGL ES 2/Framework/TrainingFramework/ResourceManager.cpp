@@ -90,6 +90,22 @@ void ResourceManager::LoadAndAllocateResourceData(const char* resourceManagerPat
 	i = 0;
 	fseek(resourceFile, 2, SEEK_CUR); //skip reading Cube Texture	
 	fgets(limit, sizeof(limit), resourceFile);
+	sscanf_s(limit, "#Cube Textures: %d", &count);
+	m_RmCubeTexture = new CubeTexture[count];
+	while (!feof(resourceFile) && i < count) {
+		char fakepath[100];
+		char path[100] = "../../ResourcesPacket/";
+		fgets(limit, sizeof(limit), resourceFile);
+		sscanf_s(limit, "ID %d", &m_RmCubeTexture[i].RMCubeTextID);
+		fgets(limit, sizeof(limit), resourceFile);
+		sscanf(limit, "FILE %s", &fakepath, 100);
+		strcat(path, fakepath);
+		cout << path << endl;
+		fgets(limit, sizeof(limit), resourceFile);
+		m_RmCubeTexture[i] = CubeTexture(path);
+		i++;
+	}
+	i = 0;
 	fseek(resourceFile, 2, SEEK_CUR);
 	/////////////////////////////
 	////Read the Shaders data////
@@ -125,7 +141,43 @@ void ResourceManager::LoadAndAllocateResourceData(const char* resourceManagerPat
 		fgets(limit, sizeof(limit), resourceFile);
 		fgets(limit, sizeof(limit), resourceFile);		
 		i++;
-	}	
+	}
+	i = 0;
+	///
+	fseek(resourceFile, 2, SEEK_CUR);
+	fgets(limit, sizeof(limit), resourceFile);
+	sscanf_s(limit, "#CubeShaders: %d", &count); //count of texture
+	m_RmCubeShaders = new CubeShaders[count];
+
+	while (!feof(resourceFile) && i < count) {
+		char fakepath[100];
+		char vspath[100] = "../Resources/";
+		char fakepath2[100];
+		char fspath[100] = "../Resources/";
+
+		fgets(limit, sizeof(limit), resourceFile);
+		sscanf_s(limit, "ID %d", &m_RmCubeShaders[i].m_RmCubeShaderID);
+
+		fgets(limit, sizeof(limit), resourceFile);
+		sscanf(limit, "VS %s", &fakepath, 100);
+		strcat(vspath, fakepath);
+		cout << vspath << endl;
+
+		fgets(limit, sizeof(limit), resourceFile);
+		sscanf(limit, "FS %s", &fakepath2, 100);
+		strcat(fspath, fakepath2);
+		cout << fspath << endl;
+		m_RmCubeShaders[i].Init(vspath, fspath);
+
+		strcpy(m_RmCubeShaders[i].fileVS, vspath);
+		strcpy(m_RmCubeShaders[i].fileFS, fspath);
+
+		fgets(limit, sizeof(limit), resourceFile);
+		fgets(limit, sizeof(limit), resourceFile);
+		fgets(limit, sizeof(limit), resourceFile);
+		i++;
+	}
+	i = 0;
 	fclose(resourceFile);		
 }
 

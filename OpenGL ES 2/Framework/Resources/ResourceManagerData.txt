@@ -25,7 +25,10 @@ ID 4
 FILE Textures/fire_mask.tga
 TILING CLAMP
 
-#Cube Textures: 0
+#Cube Textures: 1
+ID 0
+FILE Textures/envMap.tga
+TILING CLAMP
 
 #Shaders: 3
 ID 0
@@ -43,6 +46,14 @@ STATE DEPTH_TEST
 ID 2
 VS Shaders/FireEffectVS.vs
 FS Shaders/FireEffectFS.fs
+STATES 2
+STATE CULLING
+STATE DEPTH_TEST
+
+#CubeShaders: 1
+ID 0
+VS Shaders/CubeShaderVS.vs
+FS Shaders/CubeShaderFS.fs
 STATES 2
 STATE CULLING
 STATE DEPTH_TEST

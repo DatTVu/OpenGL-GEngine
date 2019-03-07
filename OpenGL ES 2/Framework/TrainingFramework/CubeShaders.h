@@ -8,6 +8,7 @@ public:
 	char fileFS[260];
 	GLint iPosVertexLoc;
 	GLuint iTransUniformLoc;
+	int m_RmCubeShaderID;
 	int Init(char * fileVertexShader, char * fileFragmentShader);
 	~CubeShaders();
 };

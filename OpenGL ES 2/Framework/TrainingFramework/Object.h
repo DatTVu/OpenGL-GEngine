@@ -8,8 +8,7 @@ using namespace std;
 class Object
 {	
 private:
-	Mesh m_objectMesh;
-	//TextureData* m_objectText;
+	Mesh m_objectMesh;	
 	Shaders* m_objectShader;
 public:
 	Object();

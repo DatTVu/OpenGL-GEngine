@@ -3,6 +3,9 @@
 #include "../Utilities/Mesh.h"
 #include "../Utilities/TextureData.h"
 #include "Shaders.h"
+#include "CubeTexture.h"
+#include "CubeShaders.h"
+
 using namespace std;
 
 class ResourceManager
@@ -11,6 +14,8 @@ private:
 	Mesh *m_RmMesh;	
 	TextureData *m_RmTexture;
 	Shaders *m_RmShaders;
+	CubeTexture *m_RmCubeTexture;
+	CubeShaders *m_RmCubeShaders;
 protected:
 	ResourceManager();
 	~ResourceManager();

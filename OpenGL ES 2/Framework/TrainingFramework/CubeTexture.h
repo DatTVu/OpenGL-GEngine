@@ -6,6 +6,7 @@ class CubeTexture
 	char* m_cubePixel[6];
 	void SetUpCubeTexture(const char* textPath);
 public:
+	int RMCubeTextID;
 	CubeTexture();
 	~CubeTexture();
 	CubeTexture(const char* cubeTextPath);

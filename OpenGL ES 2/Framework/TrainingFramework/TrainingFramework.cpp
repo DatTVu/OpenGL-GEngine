@@ -46,7 +46,7 @@ int turnUp = 0;
 int turnDown = 0;
 
 ////////TESTING//////////////////////////
-CubeTexture cubeTexture;
+/*CubeTexture cubeTexture;
 CubeShaders cubeShader;
 Vertex cubeVerticesData[8];
 unsigned int cubevbo;
@@ -98,7 +98,7 @@ float skyboxVertices[] = {
 	-1.0f, -1.0f,  1.0f, 1.0,
 	1.0f, -1.0f,  1.0f, 1.0
 };
-
+*/
 ///////TESTING///////////////////////////
 TextureData grassTexture;
 TextureData dirtTexture;
@@ -154,22 +154,22 @@ int Init ( ESContext *esContext )
 
 	SceneManager::GetInstance()->SetUpShaderforObject();
 	///////////////////
-	cubeVerticesData[0].pos.x = 1.0f; cubeVerticesData[0].pos.y = -1.0f; cubeVerticesData[0].pos.z = -1.0f;
+	/*cubeVerticesData[0].pos.x = 1.0f; cubeVerticesData[0].pos.y = -1.0f; cubeVerticesData[0].pos.z = -1.0f;
 	cubeVerticesData[1].pos.x = 1.0f; cubeVerticesData[1].pos.y = -1.0f; cubeVerticesData[1].pos.z = 1.0f;
 	cubeVerticesData[2].pos.x = 1.0f; cubeVerticesData[2].pos.y = 1.0f; cubeVerticesData[2].pos.z = 1.0f;
 	cubeVerticesData[3].pos.x = 1.0f; cubeVerticesData[3].pos.y = 1.0f; cubeVerticesData[3].pos.z = -1.0f;
 	cubeVerticesData[4].pos.x = -1.0f; cubeVerticesData[4].pos.y = 1.0f; cubeVerticesData[4].pos.z = 1.0f;
 	cubeVerticesData[5].pos.x = -1.0f; cubeVerticesData[5].pos.y = -1.0f; cubeVerticesData[5].pos.z = 1.0f;
 	cubeVerticesData[6].pos.x = -1.0f; cubeVerticesData[6].pos.y = 1.0f; cubeVerticesData[6].pos.z = -1.0f;
-	cubeVerticesData[7].pos.x = -1.0f; cubeVerticesData[7].pos.y = -1.0f; cubeVerticesData[7].pos.z = -1.0f;
+	cubeVerticesData[7].pos.x = -1.0f; cubeVerticesData[7].pos.y = -1.0f; cubeVerticesData[7].pos.z = -1.0f;*/
 
-	glGenBuffers(1, &cubevbo);
+	/*glGenBuffers(1, &cubevbo);
 	glBindBuffer(GL_ARRAY_BUFFER, cubevbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
 	cubeTexture = CubeTexture(k_cubeTexturePath);
-	cubeShader.Init("../Resources/Shaders/CubeShaderVS.vs", "../Resources/Shaders/CubeShaderFS.fs");
+	cubeShader.Init("../Resources/Shaders/CubeShaderVS.vs", "../Resources/Shaders/CubeShaderFS.fs");*/
 
 	///////////////////////////////////////////////////
 	mHeightmap.loadRAW(terrainRow, terrainColumn, "../../ResourcesPacket/Textures/heightmap.raw", 0.25f, -10.0f);
@@ -221,7 +221,7 @@ void Draw ( ESContext *esContext )
 
 	SceneManager::GetInstance()->Draw(WVP);
 
-	Matrix scaleCubeMatrix;
+	/*Matrix scaleCubeMatrix;
 
 	scaleCubeMatrix.SetScale(10.0, 10.0, 10.0);
 
@@ -249,7 +249,7 @@ void Draw ( ESContext *esContext )
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
 
 	//////////////////////////////////////////////////////
 
