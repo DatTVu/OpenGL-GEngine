@@ -21,6 +21,6 @@ void main()
 	vec4 blendcolor = texture2D(u_Texture3, textCoord);
 	vec4 texelColor = (blendcolor.r * color1+ blendcolor.g* color2 + blendcolor.b* color3)/(blendcolor.r + blendcolor.g +blendcolor.b);
 
-	gl_FragColor = mix(fog_color, texelColor, lerpValue);
-	//gl_FragColor = texelColor;
+	//gl_FragColor = mix(fog_color, texelColor, lerpValue);
+	gl_FragColor = texelColor;
 }

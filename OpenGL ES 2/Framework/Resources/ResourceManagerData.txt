@@ -57,7 +57,7 @@ ID 0
 FILE Textures/envMap.tga
 TILING CLAMP
 
-#Shaders: 6
+#Shaders: 5
 ID 0
 VS Shaders/TriangleShaderVS.vs
 FS Shaders/TriangleShaderFS.fs
