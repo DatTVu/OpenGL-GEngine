@@ -14,6 +14,5 @@ void main()
 	vec2 Tex_coords_displaced = textCoord + offset;
 	vec4 fire_color = texture2D (u_Texture0, Tex_coords_displaced);
 	vec4 AlphaValue = texture2D(u_Texture2, textCoord);
-    gl_FragColor = fire_color * (1.0, 1.0, 1.0, AlphaValue.r);
-	//gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    gl_FragColor = fire_color * (1.0, 1.0, 1.0, AlphaValue.r);	
 }

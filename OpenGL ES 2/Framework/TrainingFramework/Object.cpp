@@ -13,13 +13,11 @@ Object::~Object()
 {
 }
 
-void Object::Draw(Matrix mvp, float time) {	
-	
+void Object::Draw(Matrix mvp, float time, Vector3 camPos) {
+
 	glUseProgram(m_objectShader->program);
 	glBindBuffer(GL_ARRAY_BUFFER, m_objectMesh.GetVboId());
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_objectMesh.GetIboId());
-	
-	
 
 	if (m_objectShader->positionAttribute != -1)
 	{
@@ -67,7 +65,7 @@ void Object::Draw(Matrix mvp, float time) {
 	}
 
 	for (int i = 0; i < m_ObjectTextCount; i++) {
-		glActiveTexture(GL_TEXTURE0+i);
+		glActiveTexture(GL_TEXTURE0 + i);
 		string tempPath = "u_Texture" + to_string(i);
 		glBindTexture(GL_TEXTURE_2D, m_objectText[i].GetTextBufferID());
 		int iTextureLoc = glGetUniformLocation(m_objectShader->program, &tempPath[0]);
@@ -75,7 +73,19 @@ void Object::Draw(Matrix mvp, float time) {
 		{
 			glUniform1i(iTextureLoc, 0 + i);
 		}
-		
+	}
+	if (m_objectShader->cameraPosUniform != -1) {
+		glUniform4f(m_objectShader->cameraPosUniform, camPos.x, camPos.y, camPos.z, 1.0);
+	}
+	for (int i = 0; i < m_ObjectCubeTextCount; i++) {
+		glActiveTexture(GL_TEXTURE0 + i);
+		string tempPath = "u_samplerCubeMap" + to_string(i);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_objectCubeText[i].GetCubeTextID());
+		int iTextureLoc = glGetUniformLocation(m_objectShader->program, &tempPath[0]);
+		if (iTextureLoc != -1)
+		{
+			glUniform1i(iTextureLoc, 0 + i);
+		}
 	}
 
 	glDrawElements(GL_TRIANGLES, m_objectMesh.GetIndicesNum(), GL_UNSIGNED_INT, 0);
@@ -97,6 +107,14 @@ void Object::SetUpTexture(TextureData* texture) {
 	for (int i = 0; i < m_ObjectTextCount; i++)
 	{
 		m_objectText[i] = texture[m_ObjectTextID[i]];
+	}
+	
+}
+void Object::SetUpCubeTexture(CubeTexture* texture) {
+	m_objectCubeText = new CubeTexture[m_ObjectCubeTextCount];
+	for (int i = 0; i < m_ObjectCubeTextCount; i++)
+	{
+		m_objectCubeText[i] = texture[m_ObjectCubeTextID[i]];
 	}
 }
 

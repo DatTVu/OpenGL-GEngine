@@ -54,6 +54,7 @@ void SceneManager::LoadAndAllocateSceneData(const char* scenceManagerDataPath) {
 				}
 		fgets(linebuffer, sizeof(linebuffer), sceneFile);
 		sscanf_s(linebuffer, "CUBETEXTURES %d", &m_SmObjectPointer[i].m_ObjectCubeTextCount);
+		m_SmObjectPointer[i].m_ObjectCubeTextID = new int[m_SmObjectPointer[i].m_ObjectCubeTextCount];
 			for (int k = 0; k < m_SmObjectPointer[i].m_ObjectCubeTextCount; k++) {
 				fgets(linebuffer, sizeof(linebuffer), sceneFile);
 				sscanf_s(linebuffer, "CUBETEXTURE %d", &m_SmObjectPointer[i].m_ObjectCubeTextID[k]);
@@ -64,7 +65,7 @@ void SceneManager::LoadAndAllocateSceneData(const char* scenceManagerDataPath) {
 		sscanf_s(linebuffer, "LIGHTS %d", &m_SmObjectPointer[i].m_ObjectLightCount);
 			for (int l = 0; l < m_SmObjectPointer[i].m_ObjectLightCount; l++) {
 				fgets(linebuffer, sizeof(linebuffer), sceneFile);
-				sscanf_s(linebuffer, "LIGHT %d", &m_SmObjectPointer[i].m_ObjectCubeTextID[l]);
+				//sscanf_s(linebuffer, "LIGHT %d", &m_SmObjectPointer[i].m_ObjectCubeTextID[l]);
 			}
 		fgets(linebuffer, sizeof(linebuffer), sceneFile);
 		sscanf_s(linebuffer, "POSITION %f , %f , %f", &m_SmObjectPointer[i].m_ObjectPosition.x, &m_SmObjectPointer[i].m_ObjectPosition.y, &m_SmObjectPointer[i].m_ObjectPosition.z);
@@ -74,6 +75,7 @@ void SceneManager::LoadAndAllocateSceneData(const char* scenceManagerDataPath) {
 		sscanf_s(linebuffer, "SCALE %f , %f , %f", &m_SmObjectPointer[i].m_ObjectScale.x, &m_SmObjectPointer[i].m_ObjectScale.y, &m_SmObjectPointer[i].m_ObjectScale.z);
 		i++;
 	}
+	i = 0;
 	fclose(sceneFile);
 }
 
@@ -81,8 +83,9 @@ void SceneManager::SetMeshPointerToRM(Mesh* SmMeshPointer) {
 	this->m_SmObjectMeshPointer = SmMeshPointer;	
 }
 
-void SceneManager::SetTextPointerToRM(TextureData *SmObject2DTexturePointer) {
+void SceneManager::SetTextPointerToRM(TextureData *SmObject2DTexturePointer, CubeTexture *SmObjectCubeTexturePointer) {
 	this->m_SmObject2DTexturePointer = SmObject2DTexturePointer;
+	this->m_SmObjectCubeTexturePointer = SmObjectCubeTexturePointer;
 }
 
 void SceneManager::SetShaderPointerToRM(Shaders* SmObjectShaderPointer) {
@@ -95,10 +98,12 @@ void SceneManager::SetUpMeshforObject() {
 		m_SmObjectPointer[i].SetUpMesh(m_SmObjectMeshPointer[m_SmObjectPointer[i].m_ObjectModelID]);
 	}
 }
+
 void SceneManager::SetUpTextureforObject() {
 	for (int i = 0; i < this->m_SmObjectCount; i++)
 	{
 		m_SmObjectPointer[i].SetUpTexture(m_SmObject2DTexturePointer);
+		m_SmObjectPointer[i].SetUpCubeTexture(m_SmObjectCubeTexturePointer);
 	}
 }
 
@@ -109,10 +114,10 @@ void SceneManager::SetUpShaderforObject() {
 	}
 }
 
-void SceneManager::Draw(Matrix mvp) {
+void SceneManager::Draw(Matrix mvp, Vector3 camPos) {
 	for (int i = 0; i < this->m_SmObjectCount; i++)
 	{		
-		m_SmObjectPointer[i].Draw(mvp, m_TimeUniform);
+		m_SmObjectPointer[i].Draw(mvp, m_TimeUniform, camPos);
 	}
 }
 

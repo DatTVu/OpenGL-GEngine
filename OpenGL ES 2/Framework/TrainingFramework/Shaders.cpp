@@ -34,7 +34,8 @@ int Shaders::Init(char * fileVertexShader, char * fileFragmentShader)
 	textureUniform1 = glGetUniformLocation(program, "u_Texture1");
 	textureUniform2 = glGetUniformLocation(program, "u_Texture2");
 	textureUniform3 = glGetUniformLocation(program, "u_Texture3");
-	textureUniform4 = glGetUniformLocation(program, "u_BlendMap");
+	textureUniform4 = glGetUniformLocation(program, "u_Texture4");
+	cubeTextureUniform0 = glGetUniformLocation(program, "u_samplerCubeMap0");
 	cameraPosUniform = glGetUniformLocation(program, "u_camPos");
 	timeUniform = glGetUniformLocation(program, "u_Time");
 	return 0;

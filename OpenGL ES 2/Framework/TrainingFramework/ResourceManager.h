@@ -4,7 +4,6 @@
 #include "../Utilities/TextureData.h"
 #include "Shaders.h"
 #include "CubeTexture.h"
-#include "CubeShaders.h"
 
 using namespace std;
 
@@ -14,8 +13,7 @@ private:
 	Mesh *m_RmMesh;	
 	TextureData *m_RmTexture;
 	Shaders *m_RmShaders;
-	CubeTexture *m_RmCubeTexture;
-	CubeShaders *m_RmCubeShaders;
+	CubeTexture *m_RmCubeTexture;	
 protected:
 	ResourceManager();
 	~ResourceManager();
@@ -46,6 +44,7 @@ public:
 	Mesh* GetMeshData();
 	TextureData* GetTextureData();
 	Shaders* GetShaderData();
+	CubeTexture* GetCubeTextureData();	
 
 protected:
 	static ResourceManager * ms_pInstance;

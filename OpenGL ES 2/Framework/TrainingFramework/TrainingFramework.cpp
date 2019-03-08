@@ -5,7 +5,6 @@
 #include "../Utilities/utilities.h" // if you use STL, please include this line AFTER all other include
 #include "Vertex.h"
 #include "Shaders.h"
-#include "CubeShaders.h"
 #include "CubeTexture.h"
 #include "Globals.h"
 #include "ResourceManager.h"
@@ -20,14 +19,6 @@ using namespace std;
 
 const char k_resourceManagerPath[50] = "../Resources/ResourceManagerData.txt";
 const char k_sceneManagerPath[50] = "../Resources/SceneManagerData.txt";
-const char k_cubeTexturePath[75] = "../../ResourcesPacket/Textures/SkyboxTextures/";
-
-char k_grassTexturePath[60] = "../../ResourcesPacket/Textures/Grass.tga";
-char k_dirtTexturePath[60] = "../../ResourcesPacket/Textures/Dirt.tga";
-char k_rockTexturePath[60] = "../../ResourcesPacket/Textures/Rock.tga";
-char k_blendMapTexturePath[75] = "../../ResourcesPacket/Textures/Terrain_blendmap_1.tga";
-
-GLuint cubeTextID;
 
 Matrix WVP;
 Matrix projectionMatrix;
@@ -44,84 +35,6 @@ int turnLeft = 0;
 int turnRight = 0;
 int turnUp = 0;
 int turnDown = 0;
-
-////////TESTING//////////////////////////
-/*CubeTexture cubeTexture;
-CubeShaders cubeShader;
-Vertex cubeVerticesData[8];
-unsigned int cubevbo;
-unsigned int cubeibo;
-
-
-
-float skyboxVertices[] = {
-	// positions          
-	-1.0f,  1.0f, -1.0f, 1.0,
-	-1.0f, -1.0f, -1.0f, 1.0,
-	1.0f, -1.0f, -1.0f, 1.0,
-	1.0f, -1.0f, -1.0f, 1.0,
-	1.0f,  1.0f, -1.0f, 1.0,
-	-1.0f,  1.0f, -1.0f, 1.0,
-
-	-1.0f, -1.0f,  1.0f, 1.0,
-	-1.0f, -1.0f, -1.0f, 1.0,
-	-1.0f,  1.0f, -1.0f, 1.0,
-	-1.0f,  1.0f, -1.0f, 1.0,
-	-1.0f,  1.0f,  1.0f, 1.0,
-	-1.0f, -1.0f,  1.0f, 1.0,
-
-	1.0f, -1.0f, -1.0f, 1.0,
-	1.0f, -1.0f,  1.0f, 1.0,
-	1.0f,  1.0f,  1.0f, 1.0,
-	1.0f,  1.0f,  1.0f, 1.0,
-	1.0f,  1.0f, -1.0f, 1.0,
-	1.0f, -1.0f, -1.0f, 1.0,
-
-	-1.0f, -1.0f,  1.0f, 1.0,
-	-1.0f,  1.0f,  1.0f, 1.0,
-	1.0f,  1.0f,  1.0f, 1.0,
-	1.0f,  1.0f,  1.0f, 1.0,
-	1.0f, -1.0f,  1.0f, 1.0,
-	-1.0f, -1.0f,  1.0f, 1.0,
-
-	-1.0f,  1.0f, -1.0f, 1.0,
-	1.0f,  1.0f, -1.0f, 1.0,
-	1.0f,  1.0f,  1.0f, 1.0,
-	1.0f,  1.0f,  1.0f, 1.0,
-	-1.0f,  1.0f,  1.0f, 1.0,
-	-1.0f,  1.0f, -1.0f, 1.0,
-
-	-1.0f, -1.0f, -1.0f, 1.0,
-	-1.0f, -1.0f,  1.0f, 1.0,
-	1.0f, -1.0f, -1.0f, 1.0,
-	1.0f, -1.0f, -1.0f, 1.0,
-	-1.0f, -1.0f,  1.0f, 1.0,
-	1.0f, -1.0f,  1.0f, 1.0
-};
-*/
-///////TESTING///////////////////////////
-TextureData grassTexture;
-TextureData dirtTexture;
-TextureData rockTexture;
-TextureData blendMapTexture;
-
-Shaders terrainShader;
-Heightmap mHeightmap;
-
-unsigned int terrainVbo;
-unsigned int terrainIbo;
-/////////////////////////////////////////////
-int terrainColumn = 128;
-int terrainRow = 128;
-float deltaxTerrain = 0.05f;
-float deltazTerrain = 0.05f;
-Vector3 terrainCenter;
-Vertex* terrainVertices;
-int terrainVertexCount;
-int* terrainIndice;
-int terrainIndiceCount;
-///////////////////////////////////////////////////////
-
 int Init ( ESContext *esContext )
 {
 	glClearColor ( 1.0f, 1.0f, 1.0f, 1.0f );
@@ -144,7 +57,7 @@ int Init ( ESContext *esContext )
 	
 	SceneManager::GetInstance()->SetMeshPointerToRM(ResourceManager::GetInstance()->GetMeshData());
 
-	SceneManager::GetInstance()->SetTextPointerToRM(ResourceManager::GetInstance()->GetTextureData());
+	SceneManager::GetInstance()->SetTextPointerToRM(ResourceManager::GetInstance()->GetTextureData(), ResourceManager::GetInstance()->GetCubeTextureData());
 		
 	SceneManager::GetInstance()->SetShaderPointerToRM(ResourceManager::GetInstance()->GetShaderData());
 	
@@ -152,51 +65,7 @@ int Init ( ESContext *esContext )
 
 	SceneManager::GetInstance()->SetUpTextureforObject();
 
-	SceneManager::GetInstance()->SetUpShaderforObject();
-	///////////////////
-	/*cubeVerticesData[0].pos.x = 1.0f; cubeVerticesData[0].pos.y = -1.0f; cubeVerticesData[0].pos.z = -1.0f;
-	cubeVerticesData[1].pos.x = 1.0f; cubeVerticesData[1].pos.y = -1.0f; cubeVerticesData[1].pos.z = 1.0f;
-	cubeVerticesData[2].pos.x = 1.0f; cubeVerticesData[2].pos.y = 1.0f; cubeVerticesData[2].pos.z = 1.0f;
-	cubeVerticesData[3].pos.x = 1.0f; cubeVerticesData[3].pos.y = 1.0f; cubeVerticesData[3].pos.z = -1.0f;
-	cubeVerticesData[4].pos.x = -1.0f; cubeVerticesData[4].pos.y = 1.0f; cubeVerticesData[4].pos.z = 1.0f;
-	cubeVerticesData[5].pos.x = -1.0f; cubeVerticesData[5].pos.y = -1.0f; cubeVerticesData[5].pos.z = 1.0f;
-	cubeVerticesData[6].pos.x = -1.0f; cubeVerticesData[6].pos.y = 1.0f; cubeVerticesData[6].pos.z = -1.0f;
-	cubeVerticesData[7].pos.x = -1.0f; cubeVerticesData[7].pos.y = -1.0f; cubeVerticesData[7].pos.z = -1.0f;*/
-
-	/*glGenBuffers(1, &cubevbo);
-	glBindBuffer(GL_ARRAY_BUFFER, cubevbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
-	cubeTexture = CubeTexture(k_cubeTexturePath);
-	cubeShader.Init("../Resources/Shaders/CubeShaderVS.vs", "../Resources/Shaders/CubeShaderFS.fs");*/
-
-	///////////////////////////////////////////////////
-	mHeightmap.loadRAW(terrainRow, terrainColumn, "../../ResourcesPacket/Textures/heightmap.raw", 0.25f, -10.0f);
-	GenerateTriGrid(terrainRow, terrainColumn, deltaxTerrain, deltazTerrain, terrainCenter, terrainVertices, terrainVertexCount, terrainIndice, terrainIndiceCount);
-	for (int i = 0; i < terrainRow; i++) {
-		for (int j = 0; j < terrainColumn; j++) {
-			int index = i* terrainColumn + j;
-			terrainVertices[index].pos.y = mHeightmap(i, j)/25;
-		}
-	}
-	
-	glGenBuffers(1, &terrainVbo);
-	glBindBuffer(GL_ARRAY_BUFFER, terrainVbo);
-	glBufferData(GL_ARRAY_BUFFER, terrainVertexCount*sizeof(Vertex), &terrainVertices[0].pos, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glGenBuffers(1, &terrainIbo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainIbo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, terrainIndiceCount*sizeof(terrainIndice), terrainIndice, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	grassTexture = TextureData(k_grassTexturePath);
-	dirtTexture = TextureData(k_dirtTexturePath);
-	rockTexture = TextureData(k_rockTexturePath);
-	blendMapTexture = TextureData(k_blendMapTexturePath);
-	terrainShader.Init("../Resources/Shaders/TriangleShaderVS.vs", "../Resources/Shaders/TerrainGridFS.fs");	
-	///////////////////////////////////////////////////
+	SceneManager::GetInstance()->SetUpShaderforObject();	
 
 	return 0;
 }
@@ -212,126 +81,7 @@ void Draw ( ESContext *esContext )
 	trans.SetTranslation(0.0, 0.0, 0.0);
 	WVP = trans * WVP;
 
-
-	Matrix scaleTerrainMatrix;
-
-	scaleTerrainMatrix.SetScale(1.0, 1.0, 1.0);
-
-	scaleTerrainMatrix = scaleTerrainMatrix * WVP;
-
-	SceneManager::GetInstance()->Draw(WVP);
-
-	/*Matrix scaleCubeMatrix;
-
-	scaleCubeMatrix.SetScale(10.0, 10.0, 10.0);
-
-	scaleCubeMatrix = scaleCubeMatrix * WVP;
-
-	glUseProgram(cubeShader.program);
-
-	glBindBuffer(GL_ARRAY_BUFFER, cubevbo);
-
-	glActiveTexture(GL_TEXTURE10);
-	
-	int iCubeTextureLoc = glGetUniformLocation(cubeShader.program, "u_samplerCubeMap");
-
-	glUniform1i(iCubeTextureLoc, 10);
-
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeTexture.GetCubeTextID());
-
-	glEnableVertexAttribArray(cubeShader.iPosVertexLoc);
-
-	glVertexAttribPointer(cubeShader.iPosVertexLoc, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	
-	glUniformMatrix4fv(cubeShader.iTransUniformLoc, 1, GL_FALSE, &scaleCubeMatrix.m[0][0]);
-	
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
-
-	//////////////////////////////////////////////////////
-
-	glUseProgram(terrainShader.program);
-
-	glBindBuffer(GL_ARRAY_BUFFER, terrainVbo);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainIbo);
-
-	if (terrainShader.positionAttribute != -1)
-	{
-		glEnableVertexAttribArray(terrainShader.positionAttribute);
-		glVertexAttribPointer(terrainShader.positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-	}
-	if (terrainShader.normalAttribute != -1)
-	{
-		glEnableVertexAttribArray(terrainShader.normalAttribute);
-		glVertexAttribPointer(terrainShader.normalAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos);
-	}
-	if (terrainShader.binormalAttribute != -1)
-	{
-		glEnableVertexAttribArray(terrainShader.binormalAttribute);
-		glVertexAttribPointer(terrainShader.binormalAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal);
-	}
-	if (terrainShader.tangentAttribute != -1)
-	{
-		glEnableVertexAttribArray(terrainShader.tangentAttribute);
-		glVertexAttribPointer(terrainShader.tangentAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal + sizebinormal);
-	}
-	if (terrainShader.textureAttribute != -1)
-	{
-		glEnableVertexAttribArray(terrainShader.textureAttribute);
-		glVertexAttribPointer(terrainShader.textureAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal + sizebinormal + sizetangent);
-	}
-	if (terrainShader.translationUniform != -1)
-	{
-		
-		glUniformMatrix4fv(terrainShader.translationUniform, 1, GL_FALSE, &scaleTerrainMatrix.m[0][0]);
-	}
-	glActiveTexture(GL_TEXTURE0);
-
-	glBindTexture(GL_TEXTURE_2D, rockTexture.GetTextBufferID());
-
-	if (terrainShader.textureUniform1 != -1)
-	{
-		glUniform1i(terrainShader.textureUniform1, 0);
-	}
-	glActiveTexture(GL_TEXTURE1);
-
-	glBindTexture(GL_TEXTURE_2D, dirtTexture.GetTextBufferID());
-
-	if (terrainShader.textureUniform2 != -1)
-	{
-		glUniform1i(terrainShader.textureUniform2, 1);
-	}
-	glActiveTexture(GL_TEXTURE2);
-
-	glBindTexture(GL_TEXTURE_2D, grassTexture.GetTextBufferID());
-
-	if (terrainShader.textureUniform3 != -1)
-	{
-		glUniform1i(terrainShader.textureUniform3, 2);
-	}
-	glActiveTexture(GL_TEXTURE3);
-
-	glBindTexture(GL_TEXTURE_2D, blendMapTexture.GetTextBufferID());
-
-	if (terrainShader.textureUniform4 != -1)
-	{
-		glUniform1i(terrainShader.textureUniform4, 3);
-	}
-	if (terrainShader.cameraPosUniform != -1) {
-		glUniform4f(terrainShader.cameraPosUniform, camera1.GetPos().x, camera1.GetPos().y, camera1.GetPos().z, 1.0);
-	}
-	
-	glDrawElements(GL_TRIANGLES, terrainIndiceCount, GL_UNSIGNED_INT, 0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
+	SceneManager::GetInstance()->Draw(WVP, camera1.GetPos());	
 	
 	eglSwapBuffers ( esContext->eglDisplay, esContext->eglSurface );
 }

@@ -17,6 +17,7 @@ public:
 	//Constructor
 	Mesh();
 	Mesh(char* mfilename);
+	Mesh(Vertex* vertex, int* indices, int numVertices, int numIndices);
 	//Destructor
 	~Mesh();
 	//Methods	

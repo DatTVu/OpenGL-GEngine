@@ -1,16 +1,20 @@
 #pragma once
 #include "../Utilities/utilities.h"
 #include "Object.h"
+#include "CubeTexture.h"
+
 
 class SceneManager
 {
 private:
 	////////////////////
-	Object *m_SmObjectPointer;
-	Mesh *m_SmObjectMeshPointer;
+	Object *m_SmObjectPointer;	
+	Mesh *m_SmObjectMeshPointer;	
 	TextureData *m_SmObject2DTexturePointer;
-	Shaders* m_SmObjectShaderPointer;
+	CubeTexture *m_SmObjectCubeTexturePointer;
+	Shaders* m_SmObjectShaderPointer;	
 	int m_SmObjectCount;
+	int m_SmCubeObjectCount;
 	float m_TimeUniform=0.0f;
 	////////////////////	
 protected:	
@@ -41,12 +45,12 @@ public:
 
 	void LoadAndAllocateSceneData(const char* scenceManagerDataPath);
 	void SetMeshPointerToRM(Mesh* SmMeshPointer);
-	void SetTextPointerToRM(TextureData *SmObject2DTexturePointer);
+	void SetTextPointerToRM(TextureData *SmObject2DTexturePointer, CubeTexture *SmObjectCubeTexturePointer);	
 	void SetShaderPointerToRM(Shaders* SmObjectShaderPointer);
-	void SetUpMeshforObject();
+	void SetUpMeshforObject();	
 	void SetUpTextureforObject();
-	void SetUpShaderforObject();
-	void Draw(Matrix mvp);
+	void SetUpShaderforObject();	
+	void Draw(Matrix mvp, Vector3 camPos);
 	void UpDateTimeUniform(float dtime);
 	float GetTimeUniform();
 

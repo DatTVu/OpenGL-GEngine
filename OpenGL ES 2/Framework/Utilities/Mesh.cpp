@@ -22,6 +22,15 @@ Mesh::Mesh(char* mfilename) {
 	this->LoadVertexData(*this);
 }
 
+Mesh::Mesh(Vertex* vertex, int* indices, int numVertices, int numIndices) {
+	m_Vertices = vertex;
+	m_Indices = indices;
+	m_numVertices = numVertices;
+	m_numIndices = numIndices;
+	this->LoadVertexData(*this);
+}
+
+
 Mesh::~Mesh()
 {
 

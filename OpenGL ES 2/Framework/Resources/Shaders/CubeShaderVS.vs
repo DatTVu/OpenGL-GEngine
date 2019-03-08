@@ -1,9 +1,9 @@
-attribute vec4 a_CubeVertexPos;
-uniform mat4 u_CubeMVPMatrix;
+attribute vec3 a_posL;
+uniform mat4 m4_translation;
 varying vec4 v_pos;
 
 void main(void)
-{    
-	gl_Position = u_CubeMVPMatrix* a_CubeVertexPos;	
-	v_pos = a_CubeVertexPos;
+{   	
+	gl_Position = m4_translation* vec4(a_posL, 1.0);	
+	v_pos = vec4(a_posL, 1.0);
 }

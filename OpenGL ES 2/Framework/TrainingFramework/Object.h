@@ -2,6 +2,7 @@
 #include "Shaders.h"
 #include "../Utilities/Mesh.h"
 #include "../Utilities/TextureData.h"
+#include "CubeTexture.h"
 #include <string>
 using namespace std;
 
@@ -15,10 +16,12 @@ public:
 	~Object();
 	void SetUpMesh(Mesh mesh);
 	void SetUpTexture(TextureData* texture);
+	void SetUpCubeTexture(CubeTexture* texture);
 	void SetUpShader(Shaders* shader);
-	void Draw(Matrix mvp, float time);
+	void Draw(Matrix mvp, float time, Vector3 camPos);
 	///////////////////////
 	TextureData* m_objectText;
+	CubeTexture * m_objectCubeText;
 	///// Member data//////
 	int m_ObjectID;
 	int m_ObjectModelID;

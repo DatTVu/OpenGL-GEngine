@@ -4,6 +4,8 @@
 #include <fstream>
 #include <string>
 #include <cstring>
+#include "Heightmap.h"
+#include "TriangleGrid.h"
 using namespace std;
 
 ResourceManager * ResourceManager::ms_pInstance = NULL;
@@ -46,20 +48,62 @@ void ResourceManager::LoadAndAllocateResourceData(const char* resourceManagerPat
 	fgets(limit, sizeof(limit), resourceFile); 
 	sscanf_s(limit, "#Models: %d", &count);	//count of models
 	m_RmMesh = new Mesh[count]; //allocate an array of Mesh
-
-	int i = 0;
-		
+	int i = 0;		
  	while (!feof(resourceFile) && i<count) {
-		char fakepath[100];
-		char path[100] = "../../ResourcesPacket/";
+		char type[10];
 		fgets(limit, sizeof(limit), resourceFile);
-		sscanf_s(limit, "ID %d", &m_RmMesh[i].m_RManagerID);
-		fgets(limit, sizeof(limit), resourceFile);
-		sscanf(limit, "FILE %s", &fakepath, 100);		
-		strcat(path, fakepath);		
-		cout << path << endl;
-		m_RmMesh[i] = Mesh(path);
-		i++;	
+		sscanf_s(limit, "TYPE %s", &type, 10);
+		//if (type == "NFG") {
+		if (strcmp(type, "NFG") == 0) {
+			char fakepath[100];
+			char path[100] = "../../ResourcesPacket/";
+			fgets(limit, sizeof(limit), resourceFile);
+			sscanf_s(limit, "ID %d", &m_RmMesh[i].m_RManagerID);
+			fgets(limit, sizeof(limit), resourceFile);
+			sscanf(limit, "FILE %s", &fakepath, 100);
+			strcat(path, fakepath);
+			cout << path << endl;
+			m_RmMesh[i] = Mesh(path);
+			i++;
+		}
+		else if (strcmp(type,"RAW") == 0) {
+			Heightmap heightmap;
+			int terrainRow;
+			int terrainColumn;
+			float heightScale;
+			float heightOffset;
+			float deltaxTerrain;
+			float deltazTerrain;
+			Vector3 terrainCenter;
+			Vertex* terrainVertices;
+			int terrainVertexCount;
+			int* terrainIndice;
+			int terrainIndiceCount;
+			fgets(limit, sizeof(limit), resourceFile);
+			sscanf_s(limit, "ID %d", &m_RmMesh[i].m_RManagerID);
+			fgets(limit, sizeof(limit), resourceFile);
+			sscanf_s(limit, "row %d", &terrainRow);
+			fgets(limit, sizeof(limit), resourceFile);
+			sscanf_s(limit, "column %d", &terrainColumn);
+			fgets(limit, sizeof(limit), resourceFile);
+			sscanf_s(limit, "heightScale %f", &heightScale);
+			fgets(limit, sizeof(limit), resourceFile);
+			sscanf_s(limit, "heightOffset %f", &heightOffset);
+			fgets(limit, sizeof(limit), resourceFile);
+			sscanf_s(limit, "deltaX %f", &deltaxTerrain);
+			fgets(limit, sizeof(limit), resourceFile);
+			sscanf_s(limit, "deltaZ %f", &deltazTerrain);
+			heightmap.loadRAW(terrainRow, terrainColumn, "../../ResourcesPacket/Textures/heightmap.raw", heightScale, heightOffset);
+			GenerateTriGrid(terrainRow, terrainColumn, deltaxTerrain, deltazTerrain, terrainCenter, terrainVertices, terrainVertexCount, terrainIndice, terrainIndiceCount);
+			for (int i = 0; i < terrainRow; i++) {
+				for (int j = 0; j < terrainColumn; j++) {
+					int index = i* terrainColumn + j;
+					terrainVertices[index].pos.y = heightmap(i, j) / 25;
+				}
+			}
+			m_RmMesh[i] = Mesh(terrainVertices, terrainIndice, terrainVertexCount, terrainIndiceCount);
+			i++;
+		}
 	}
 	i = 0;
 
@@ -142,42 +186,7 @@ void ResourceManager::LoadAndAllocateResourceData(const char* resourceManagerPat
 		fgets(limit, sizeof(limit), resourceFile);		
 		i++;
 	}
-	i = 0;
-	///
-	fseek(resourceFile, 2, SEEK_CUR);
-	fgets(limit, sizeof(limit), resourceFile);
-	sscanf_s(limit, "#CubeShaders: %d", &count); //count of texture
-	m_RmCubeShaders = new CubeShaders[count];
-
-	while (!feof(resourceFile) && i < count) {
-		char fakepath[100];
-		char vspath[100] = "../Resources/";
-		char fakepath2[100];
-		char fspath[100] = "../Resources/";
-
-		fgets(limit, sizeof(limit), resourceFile);
-		sscanf_s(limit, "ID %d", &m_RmCubeShaders[i].m_RmCubeShaderID);
-
-		fgets(limit, sizeof(limit), resourceFile);
-		sscanf(limit, "VS %s", &fakepath, 100);
-		strcat(vspath, fakepath);
-		cout << vspath << endl;
-
-		fgets(limit, sizeof(limit), resourceFile);
-		sscanf(limit, "FS %s", &fakepath2, 100);
-		strcat(fspath, fakepath2);
-		cout << fspath << endl;
-		m_RmCubeShaders[i].Init(vspath, fspath);
-
-		strcpy(m_RmCubeShaders[i].fileVS, vspath);
-		strcpy(m_RmCubeShaders[i].fileFS, fspath);
-
-		fgets(limit, sizeof(limit), resourceFile);
-		fgets(limit, sizeof(limit), resourceFile);
-		fgets(limit, sizeof(limit), resourceFile);
-		i++;
-	}
-	i = 0;
+	i = 0;	
 	fclose(resourceFile);		
 }
 
@@ -191,4 +200,7 @@ TextureData* ResourceManager::GetTextureData() {
 }
 Shaders* ResourceManager::GetShaderData() {
 	return m_RmShaders;
+}
+CubeTexture* ResourceManager::GetCubeTextureData() {
+	return m_RmCubeTexture;
 }

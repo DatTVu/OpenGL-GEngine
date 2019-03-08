@@ -1,14 +1,29 @@
-#Models: 4
+#Models: 6
+TYPE NFG
 ID 0
 FILE Models/Woman1.nfg
+TYPE NFG
 ID 1
 FILE Models/Woman2.nfg
+TYPE NFG
 ID 2
 FILE Models/fire.nfg
+TYPE NFG
 ID 3
 FILE Models/Bila.nfg
+TYPE NFG
+ID 4
+FILE Models/cube.nfg
+TYPE RAW
+ID 5
+row 128
+column 128
+heightScale 0.25f
+heightOffset -10.0f
+deltaX 0.5f
+deltaZ 0.5f
 
-#2D Textures: 5
+#2D Textures: 9
 ID 0
 FILE Textures/Woman1.tga
 TILING CLAMP
@@ -24,13 +39,25 @@ TILING CLAMP
 ID 4
 FILE Textures/fire_mask.tga
 TILING CLAMP
+ID 5
+FILE Textures/Grass.tga
+TILING CLAMP
+ID 6
+FILE Textures/Dirt.tga
+TILING CLAMP
+ID 7
+FILE Textures/Rock.tga
+TILING CLAMP
+ID 8
+FILE Textures/Terrain_blendmap_1.tga
+TILING CLAMP
 
 #Cube Textures: 1
 ID 0
 FILE Textures/envMap.tga
 TILING CLAMP
 
-#Shaders: 3
+#Shaders: 6
 ID 0
 VS Shaders/TriangleShaderVS.vs
 FS Shaders/TriangleShaderFS.fs
@@ -39,7 +66,7 @@ STATE CULLING
 STATE DEPTH_TEST
 ID 1
 VS Shaders/TriangleShaderVS.vs
-FS Shaders/TriangleShaderFS.fs
+FS Shaders/TerrainGridFS.fs
 STATES 2
 STATE CULLING
 STATE DEPTH_TEST
@@ -49,11 +76,15 @@ FS Shaders/FireEffectFS.fs
 STATES 2
 STATE CULLING
 STATE DEPTH_TEST
-
-#CubeShaders: 1
-ID 0
+ID 3
 VS Shaders/CubeShaderVS.vs
 FS Shaders/CubeShaderFS.fs
+STATES 2
+STATE CULLING
+STATE DEPTH_TEST
+ID 4
+VS Shaders/ReflectionVS.vs
+FS Shaders/ReflectionFS.fs
 STATES 2
 STATE CULLING
 STATE DEPTH_TEST

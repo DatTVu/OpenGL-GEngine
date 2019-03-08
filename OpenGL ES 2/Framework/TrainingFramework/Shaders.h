@@ -19,6 +19,7 @@ public:
 	GLuint textureUniform2;
 	GLuint textureUniform3;
 	GLuint textureUniform4;
+	GLuint cubeTextureUniform0;
 	GLuint timeUniform;
 	int m_RmShaderID;
 	int Init(char * fileVertexShader, char * fileFragmentShader);
