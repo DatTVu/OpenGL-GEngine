@@ -6,10 +6,9 @@ varying vec3 v_normW;
 varying vec3 v_posW;
 void main()
 {
-    gl_Position  = u_WVP * vec4(a_posL, 1.0);
-    // calculate v_normW
-    v_normW = vec3(u_WVP*vec4(a_normal, 0.0));
-    // calculate v_posW    
-	v_posW = a_posL;
+	vec4 posL = vec4(a_posL, 1.0);
+    gl_Position  = u_WVP * posL;    
+    v_normW = vec3(u_W*vec4(a_normal, 0.0));
+    v_posW = vec3(u_W*posL);
 }
    
