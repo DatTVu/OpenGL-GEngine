@@ -23,7 +23,7 @@ heightOffset -10.0f
 deltaX 0.5f
 deltaZ 0.5f
 
-#2D Textures: 9
+#2D Textures: 10
 ID 0
 FILE Textures/Woman1.tga
 TILING CLAMP
@@ -51,13 +51,16 @@ TILING CLAMP
 ID 8
 FILE Textures/Terrain_blendmap_1.tga
 TILING CLAMP
+ID 9
+FILE Textures/NormalMap.tga
+TILING CLAMP
 
 #Cube Textures: 1
 ID 0
 FILE Textures/envMap.tga
 TILING CLAMP
 
-#Shaders: 7
+#Shaders: 8
 ID 0
 VS Shaders/TriangleShaderVS.vs
 FS Shaders/TriangleShaderFS.fs
@@ -97,6 +100,12 @@ STATE DEPTH_TEST
 ID 6
 VS Shaders/PhongShadingVS.vs
 FS Shaders/PhongShadingFS.fs
+STATES 2
+STATE CULLING
+STATE DEPTH_TEST
+ID 7
+VS Shaders/NormalMapVS.vs
+FS Shaders/NormalMapFS.fs
 STATES 2
 STATE CULLING
 STATE DEPTH_TEST
