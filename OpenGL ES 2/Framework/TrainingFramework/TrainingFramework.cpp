@@ -60,12 +60,16 @@ int Init ( ESContext *esContext )
 	SceneManager::GetInstance()->SetTextPointerToRM(ResourceManager::GetInstance()->GetTextureData(), ResourceManager::GetInstance()->GetCubeTextureData());
 		
 	SceneManager::GetInstance()->SetShaderPointerToRM(ResourceManager::GetInstance()->GetShaderData());
+
+	SceneManager::GetInstance()->SetLightPointerToRM(ResourceManager::GetInstance()->GetLightData());
 	
 	SceneManager::GetInstance()->SetUpMeshforObject();
 
 	SceneManager::GetInstance()->SetUpTextureforObject();
 
-	SceneManager::GetInstance()->SetUpShaderforObject();	
+	SceneManager::GetInstance()->SetUpShaderforObject();
+
+	SceneManager::GetInstance()->SetUpLightforObject();
 
 	return 0;
 }

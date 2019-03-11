@@ -46,7 +46,7 @@ void SceneManager::LoadAndAllocateSceneData(const char* scenceManagerDataPath) {
 		fgets(linebuffer, sizeof(linebuffer), sceneFile);
 		sscanf_s(linebuffer, "MODEL %d", &m_SmObjectPointer[i].m_ObjectModelID);
 		fgets(linebuffer, sizeof(linebuffer), sceneFile);
-		sscanf_s(linebuffer, "TEXTURES %d", &m_SmObjectPointer[i].m_ObjectTextCount); //<---------------------------------------------Need to handle multiple textures here 
+		sscanf_s(linebuffer, "TEXTURES %d", &m_SmObjectPointer[i].m_ObjectTextCount);
 		m_SmObjectPointer[i].m_ObjectTextID = new int[m_SmObjectPointer[i].m_ObjectTextCount];
 			for (int j = 0; j < m_SmObjectPointer[i].m_ObjectTextCount; j++) {
 				fgets(linebuffer, sizeof(linebuffer), sceneFile);
@@ -63,9 +63,10 @@ void SceneManager::LoadAndAllocateSceneData(const char* scenceManagerDataPath) {
 		sscanf_s(linebuffer, "SHADER %d", &m_SmObjectPointer[i].m_ObjectShaderID);
 		fgets(linebuffer, sizeof(linebuffer), sceneFile);
 		sscanf_s(linebuffer, "LIGHTS %d", &m_SmObjectPointer[i].m_ObjectLightCount);
+		m_SmObjectPointer[i].m_ObjectLightID = new int[m_SmObjectPointer[i].m_ObjectLightCount];
 			for (int l = 0; l < m_SmObjectPointer[i].m_ObjectLightCount; l++) {
 				fgets(linebuffer, sizeof(linebuffer), sceneFile);
-				//sscanf_s(linebuffer, "LIGHT %d", &m_SmObjectPointer[i].m_ObjectCubeTextID[l]);
+				sscanf_s(linebuffer, "LIGHT %d", &m_SmObjectPointer[i].m_ObjectLightID[l]);
 			}
 		fgets(linebuffer, sizeof(linebuffer), sceneFile);
 		sscanf_s(linebuffer, "POSITION %f , %f , %f", &m_SmObjectPointer[i].m_ObjectPosition.x, &m_SmObjectPointer[i].m_ObjectPosition.y, &m_SmObjectPointer[i].m_ObjectPosition.z);
@@ -92,6 +93,10 @@ void SceneManager::SetShaderPointerToRM(Shaders* SmObjectShaderPointer) {
 	this->m_SmObjectShaderPointer = SmObjectShaderPointer;
 }
 
+void SceneManager::SetLightPointerToRM(LightSource* SmLightPointer) {
+	this->m_SmLightSourcePointer = SmLightPointer;
+}
+
 void SceneManager::SetUpMeshforObject() {
 	for (int i = 0; i < this->m_SmObjectCount; i++)
 	{
@@ -111,6 +116,11 @@ void SceneManager::SetUpShaderforObject() {
 	for (int i = 0; i < this->m_SmObjectCount; i++)
 	{
 		m_SmObjectPointer[i].SetUpShader(m_SmObjectShaderPointer);
+	}
+}
+void SceneManager::SetUpLightforObject() {
+	for (int i = 0; i < this->m_SmObjectCount; i++) {
+		m_SmObjectPointer[i].SetUpLight(m_SmLightSourcePointer);
 	}
 }
 

@@ -57,7 +57,7 @@ ID 0
 FILE Textures/envMap.tga
 TILING CLAMP
 
-#Shaders: 5
+#Shaders: 7
 ID 0
 VS Shaders/TriangleShaderVS.vs
 FS Shaders/TriangleShaderFS.fs
@@ -88,3 +88,20 @@ FS Shaders/ReflectionFS.fs
 STATES 2
 STATE CULLING
 STATE DEPTH_TEST
+ID 5
+VS Shaders/LightSourceVS.vs
+FS Shaders/LightSourceFS.fs
+STATES 2
+STATE CULLING
+STATE DEPTH_TEST
+ID 6
+VS Shaders/PhongShadingVS.vs
+FS Shaders/PhongShadingFS.fs
+STATES 2
+STATE CULLING
+STATE DEPTH_TEST
+
+#LIGHTS: 1
+ID 0
+POSITION 0.5, 2.0, 2.0
+COLOR 1.0, 1.0, 1.0

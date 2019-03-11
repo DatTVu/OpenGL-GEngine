@@ -81,7 +81,7 @@ void Camera::MoveStraight(float delTime) {
 }
 
 void Camera::MoveSideWay(float delTime) {
-	Vector3 delMove = cameraPos.Cross(upVector).Normalize()*delTime*cameraMovementSpeed;
+	Vector3 delMove = (cameraPos-targetPos).Cross(upVector).Normalize()*delTime*cameraMovementSpeed;
 	cameraPos += delMove;
 	targetPos += delMove;
 }

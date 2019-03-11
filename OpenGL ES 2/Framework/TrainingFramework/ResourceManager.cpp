@@ -155,7 +155,7 @@ void ResourceManager::LoadAndAllocateResourceData(const char* resourceManagerPat
 	////Read the Shaders data////
 	/////////////////////////////
 	fgets(limit, sizeof(limit), resourceFile);
-	sscanf_s(limit, "#Shaders: %d", &count); //count of texture
+	sscanf_s(limit, "#Shaders: %d", &count); //count of shaders
 	m_RmShaders = new Shaders[count];
 
 	while (!feof(resourceFile) && i < count) {
@@ -186,7 +186,23 @@ void ResourceManager::LoadAndAllocateResourceData(const char* resourceManagerPat
 		fgets(limit, sizeof(limit), resourceFile);		
 		i++;
 	}
-	i = 0;	
+	i = 0;
+	fseek(resourceFile, 2, SEEK_CUR);
+	///////////////////////////////
+	///////READ LIGHT DATA/////////
+	///////////////////////////////
+	fgets(limit, sizeof(limit), resourceFile);
+	sscanf_s(limit, "#LIGHTS: %d", &count); //count of light
+	m_RmLightSource = new LightSource[count];
+	while (!feof(resourceFile) && i < count) {		
+		fgets(limit, sizeof(limit), resourceFile);
+		sscanf_s(limit, "ID %d", &m_RmLightSource[i].m_RmLightID);
+		fgets(limit, sizeof(limit), resourceFile);
+		sscanf_s(limit, "POSITION %f, %f, %f", &m_RmLightSource[i].m_lightPosition.x, &m_RmLightSource[i].m_lightPosition.y, &m_RmLightSource[i].m_lightPosition.z);
+		fgets(limit, sizeof(limit), resourceFile);
+		sscanf_s(limit, "COLOR %f, %f, %f", &m_RmLightSource[i].m_lightColor.x, &m_RmLightSource[i].m_lightColor.y, &m_RmLightSource[i].m_lightColor.z);	
+	}
+	i = 0;
 	fclose(resourceFile);		
 }
 
@@ -203,4 +219,7 @@ Shaders* ResourceManager::GetShaderData() {
 }
 CubeTexture* ResourceManager::GetCubeTextureData() {
 	return m_RmCubeTexture;
+}
+LightSource* ResourceManager::GetLightData(){
+	return m_RmLightSource;
 }

@@ -2,7 +2,7 @@
 #include "../Utilities/utilities.h"
 #include "Object.h"
 #include "CubeTexture.h"
-
+#include "LightSource.h"
 
 class SceneManager
 {
@@ -13,8 +13,8 @@ private:
 	TextureData *m_SmObject2DTexturePointer;
 	CubeTexture *m_SmObjectCubeTexturePointer;
 	Shaders* m_SmObjectShaderPointer;	
+	LightSource *m_SmLightSourcePointer;
 	int m_SmObjectCount;
-	int m_SmCubeObjectCount;
 	float m_TimeUniform=0.0f;
 	////////////////////	
 protected:	
@@ -47,9 +47,11 @@ public:
 	void SetMeshPointerToRM(Mesh* SmMeshPointer);
 	void SetTextPointerToRM(TextureData *SmObject2DTexturePointer, CubeTexture *SmObjectCubeTexturePointer);	
 	void SetShaderPointerToRM(Shaders* SmObjectShaderPointer);
+	void SetLightPointerToRM(LightSource* SmLightPointer);
 	void SetUpMeshforObject();	
 	void SetUpTextureforObject();
-	void SetUpShaderforObject();	
+	void SetUpShaderforObject();
+	void SetUpLightforObject();
 	void Draw(Matrix mvp, Vector3 camPos);
 	void UpDateTimeUniform(float dtime);
 	float GetTimeUniform();

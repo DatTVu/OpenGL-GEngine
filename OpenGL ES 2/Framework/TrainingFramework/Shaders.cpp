@@ -29,7 +29,8 @@ int Shaders::Init(char * fileVertexShader, char * fileFragmentShader)
 	tangentAttribute = glGetAttribLocation(program, "a_tangent");
 	textureAttribute = glGetAttribLocation(program, "a_texCoord");
 	//finding location of uniforms 
-	translationUniform = glGetUniformLocation(program, "m4_translation"); //World Matrix Uniform
+	wvpUniform = glGetUniformLocation(program, "u_WVP");
+	worldMatUniform = glGetUniformLocation(program, "u_W");
 	textureUniform0 = glGetUniformLocation(program, "u_Texture0");
 	textureUniform1 = glGetUniformLocation(program, "u_Texture1");
 	textureUniform2 = glGetUniformLocation(program, "u_Texture2");
@@ -38,6 +39,12 @@ int Shaders::Init(char * fileVertexShader, char * fileFragmentShader)
 	cubeTextureUniform0 = glGetUniformLocation(program, "u_samplerCubeMap0");
 	cameraPosUniform = glGetUniformLocation(program, "u_camPos");
 	timeUniform = glGetUniformLocation(program, "u_Time");
+	lightPosUniform0 = glGetUniformLocation(program, "u_LightPos0");
+	lightColorUniform0 = glGetUniformLocation(program, "u_LightColor0");
+	lightPosUniform1 = glGetUniformLocation(program, "u_LightPos1");
+	lightColorUniform1 = glGetUniformLocation(program, "u_LightColor1");
+	lightPosUniform2 = glGetUniformLocation(program, "u_LightPos2");
+	lightColorUniform2 = glGetUniformLocation(program, "u_LightColor2");
 	return 0;
 }
 

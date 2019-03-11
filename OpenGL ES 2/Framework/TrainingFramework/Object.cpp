@@ -45,7 +45,7 @@ void Object::Draw(Matrix mvp, float time, Vector3 camPos) {
 		glVertexAttribPointer(m_objectShader->textureAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal + sizebinormal + sizetangent);
 	}
 
-	if (m_objectShader->translationUniform != -1)
+	if (m_objectShader->wvpUniform != -1)
 	{
 		Matrix translationMatrix;
 
@@ -55,13 +55,45 @@ void Object::Draw(Matrix mvp, float time, Vector3 camPos) {
 
 		translationMatrix.SetTranslation(m_ObjectPosition.x, m_ObjectPosition.y, m_ObjectPosition.z);
 
-		Matrix worldMatrix = translationMatrix* scaleMatrix * mvp;
+		Matrix worldVPMatrix = translationMatrix* scaleMatrix * mvp;		
 
-		glUniformMatrix4fv(m_objectShader->translationUniform, 1, GL_FALSE, &worldMatrix.m[0][0]);
+		glUniformMatrix4fv(m_objectShader->wvpUniform, 1, GL_FALSE, &worldVPMatrix.m[0][0]);
 	}
+
+	if (m_objectShader->worldMatUniform != -1)
+	{
+		Matrix translationMatrix;
+
+		Matrix scaleMatrix;
+
+		scaleMatrix.SetScale(m_ObjectScale.x, m_ObjectScale.y, m_ObjectScale.z);
+
+		translationMatrix.SetTranslation(m_ObjectPosition.x, m_ObjectPosition.y, m_ObjectPosition.z);
+
+		Matrix worldMatrix = translationMatrix* scaleMatrix;
+
+		glUniformMatrix4fv(m_objectShader->worldMatUniform, 1, GL_FALSE, &worldMatrix.m[0][0]);
+	}
+
 
 	if (m_objectShader->timeUniform != -1) {
 		glUniform1f(m_objectShader->timeUniform, time);
+	}
+
+	for (int i = 0; i < m_ObjectLightCount; i++) {
+		string tempPath = "u_LightPos" + to_string(i);
+		unsigned int iLightPosLoc = glGetUniformLocation(m_objectShader->program, &tempPath[0]);
+		if (iLightPosLoc != -1) {
+			glUniform3f(iLightPosLoc, m_objectLight[i].m_lightPosition.x, m_objectLight[i].m_lightPosition.y, m_objectLight[i].m_lightPosition.z);
+		}	
+	}
+
+	for (int i = 0; i < m_ObjectLightCount; i++) {
+		string tempPath = "u_LightColor" + to_string(i);
+		unsigned int iLightColorLoc = glGetUniformLocation(m_objectShader->program, &tempPath[0]);
+		if (iLightColorLoc != -1) {
+			glUniform3f(iLightColorLoc, m_objectLight[i].m_lightColor.x, m_objectLight[i].m_lightColor.y, m_objectLight[i].m_lightColor.z);
+		}	
 	}
 
 	for (int i = 0; i < m_ObjectTextCount; i++) {
@@ -87,14 +119,15 @@ void Object::Draw(Matrix mvp, float time, Vector3 camPos) {
 			glUniform1i(iTextureLoc, 0 + i);
 		}
 	}
-
 	glDrawElements(GL_TRIANGLES, m_objectMesh.GetIndicesNum(), GL_UNSIGNED_INT, 0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	glBindTexture(GL_TEXTURE_2D, 0);	
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	
 }
 
@@ -120,4 +153,11 @@ void Object::SetUpCubeTexture(CubeTexture* texture) {
 
 void Object::SetUpShader(Shaders* shader) {
 	m_objectShader = &shader[m_ObjectShaderID];	
+}
+
+void Object::SetUpLight(LightSource* light) {
+	m_objectLight = new LightSource[m_ObjectLightCount];
+	for (int i = 0; i < m_ObjectLightCount; i++) {
+		m_objectLight[i] = light[m_ObjectLightID[i]];
+	}
 }

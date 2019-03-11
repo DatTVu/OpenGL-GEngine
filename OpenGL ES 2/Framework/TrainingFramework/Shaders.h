@@ -12,7 +12,8 @@ public:
 	GLint binormalAttribute;
 	GLint tangentAttribute;
 	GLint textureAttribute;
-	GLuint translationUniform;
+	GLuint wvpUniform;
+	GLuint worldMatUniform;
 	GLuint cameraPosUniform;
 	GLuint textureUniform0;
 	GLuint textureUniform1;
@@ -21,6 +22,12 @@ public:
 	GLuint textureUniform4;
 	GLuint cubeTextureUniform0;
 	GLuint timeUniform;
+	GLuint lightPosUniform0;
+	GLuint lightColorUniform0;
+	GLuint lightPosUniform1;
+	GLuint lightColorUniform1;
+	GLuint lightPosUniform2;
+	GLuint lightColorUniform2;
 	int m_RmShaderID;
 	int Init(char * fileVertexShader, char * fileFragmentShader);
 	Shaders();	

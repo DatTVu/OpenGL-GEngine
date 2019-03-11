@@ -4,12 +4,14 @@
 #include "../Utilities/TextureData.h"
 #include "Shaders.h"
 #include "CubeTexture.h"
+#include "LightSource.h"
 
 using namespace std;
 
 class ResourceManager
 {
 private: 
+	LightSource *m_RmLightSource;
 	Mesh *m_RmMesh;	
 	TextureData *m_RmTexture;
 	Shaders *m_RmShaders;
@@ -45,6 +47,7 @@ public:
 	TextureData* GetTextureData();
 	Shaders* GetShaderData();
 	CubeTexture* GetCubeTextureData();	
+	LightSource* GetLightData();
 
 protected:
 	static ResourceManager * ms_pInstance;

@@ -34,8 +34,8 @@ void CubeTexture::SetUpCubeTexture(const char* cubeTextPath) {
 
 	m_cubePixel[0] = ExtractFace(imageData, m_width, m_height, m_width/4, m_height/3, 2, 1, m_bpp);
 	m_cubePixel[1] = ExtractFace(imageData, m_width, m_height, m_width/4, m_height/3, 0, 1, m_bpp);
-	m_cubePixel[2] = ExtractFace(imageData, m_width, m_height, m_width/4, m_height/3, 1, 2, m_bpp);
-	m_cubePixel[3] = ExtractFace(imageData, m_width, m_height, m_width/4, m_height/3, 1, 0, m_bpp);
+	m_cubePixel[2] = ExtractFace(imageData, m_width, m_height, m_width/4, m_height/3, 1, 0, m_bpp);
+	m_cubePixel[3] = ExtractFace(imageData, m_width, m_height, m_width/4, m_height/3, 1, 2, m_bpp);
 	m_cubePixel[4] = ExtractFace(imageData, m_width, m_height, m_width/4, m_height/3, 1, 1, m_bpp);
 	m_cubePixel[5] = ExtractFace(imageData, m_width, m_height, m_width/4, m_height/3, 3, 1, m_bpp);	
 	

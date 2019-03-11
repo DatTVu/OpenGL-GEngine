@@ -97,6 +97,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CubeTexture.cpp" />
     <ClCompile Include="Heightmap.cpp" />
+    <ClCompile Include="LightSource.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="SceneManager.cpp" />
@@ -113,6 +114,7 @@
     <ClInclude Include="CubeTexture.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Heightmap.h" />
+    <ClInclude Include="LightSource.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="SceneManager.h" />
@@ -127,6 +129,10 @@
     <None Include="..\Resources\Shaders\CubeShaderVS.vs" />
     <None Include="..\Resources\Shaders\FireEffectFS.fs" />
     <None Include="..\Resources\Shaders\FireEffectVS.vs" />
+    <None Include="..\Resources\Shaders\LightSourceFS.fs" />
+    <None Include="..\Resources\Shaders\LightSourceVS.vs" />
+    <None Include="..\Resources\Shaders\PhongShadingFS.fs" />
+    <None Include="..\Resources\Shaders\PhongShadingVS.vs" />
     <None Include="..\Resources\Shaders\ReflectionFS.fs" />
     <None Include="..\Resources\Shaders\ReflectionVS.vs" />
     <None Include="..\Resources\Shaders\TerrainGridFS.fs" />
