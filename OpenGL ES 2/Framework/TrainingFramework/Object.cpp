@@ -110,13 +110,13 @@ void Object::Draw(Matrix mvp, float time, Vector3 camPos) {
 		glUniform4f(m_objectShader->cameraPosUniform, camPos.x, camPos.y, camPos.z, 1.0);
 	}
 	for (int i = 0; i < m_ObjectCubeTextCount; i++) {
-		glActiveTexture(GL_TEXTURE0 + i);
+		glActiveTexture(GL_TEXTURE0 + i+ m_ObjectTextCount);
 		string tempPath = "u_samplerCubeMap" + to_string(i);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, m_objectCubeText[i].GetCubeTextID());
 		int iTextureLoc = glGetUniformLocation(m_objectShader->program, &tempPath[0]);
 		if (iTextureLoc != -1)
 		{
-			glUniform1i(iTextureLoc, 0 + i);
+			glUniform1i(iTextureLoc, 0 + i+ m_ObjectTextCount);
 		}
 	}
 	glDrawElements(GL_TRIANGLES, m_objectMesh.GetIndicesNum(), GL_UNSIGNED_INT, 0);

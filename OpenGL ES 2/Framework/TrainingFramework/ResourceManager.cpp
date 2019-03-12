@@ -25,7 +25,7 @@ ResourceManager::~ResourceManager() {
 	delete[] m_RmShaders;
 	m_RmShaders = nullptr;
 	delete[] m_RmTexture;
-	m_RmTexture = nullptr;	
+	m_RmTexture = nullptr;
 	
 }
 

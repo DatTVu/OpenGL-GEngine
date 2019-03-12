@@ -12,6 +12,7 @@ void main()
 vec3 objectColor = vec3(texture2D(u_Texture0, textCoord));
 //declare ambient Strength
 float ambientStrength = 0.5;
+float attenuation = 1.0/pow(distance(u_LightPos0, FragPos), 2.0);
 //calculate ambient color
 vec3 ambient = ambientStrength* u_LightColor0;
 //calculate light vector
@@ -19,7 +20,7 @@ vec3 lightDir = normalize(u_LightPos0 - FragPos);
 vec3 norm = normalize(Normal);
 //calculate diffuse light
 float diff = max(dot(norm, lightDir), 0.0);
-vec3 diffuse = diff* u_LightColor0;
+vec3 diffuse = diff* u_LightColor0*attenuation;
 //calculate specular light
 float specularStrength = 0.5;
 vec3 viewDir = normalize(u_camPos.xyz- FragPos);

@@ -16,6 +16,7 @@ vec3 normal = texture2D(u_Texture1,v_UV).xyz;
 mat3 TBN = mat3(normalize(v_tangentW),normalize(v_bitangentW),normalize(v_normalW));
 vec3 normalW = normalize(TBN * (2.0 * normal - 1.0));
 vec3 objectColor = texture2D(u_Texture0,v_UV).xyz;
+float attenuation = 1.0/pow(distance(u_LightPos0, FragPos), 2.0);
 //declare ambient Strength
 float ambientStrength = 0.5;
 //calculate ambient color
@@ -24,7 +25,7 @@ vec3 ambient = ambientStrength* u_LightColor0;
 vec3 lightDir = normalize(u_LightPos0 - FragPos);
 //calculate diffuse light
 float diff = max(dot(normalW, lightDir), 0.0);
-vec3 diffuse = diff* u_LightColor0;
+vec3 diffuse = diff* u_LightColor0*attenuation;
 //calculate specular light
 float specularStrength = 0.5;
 vec3 viewDir = normalize(u_camPos.xyz- FragPos);
