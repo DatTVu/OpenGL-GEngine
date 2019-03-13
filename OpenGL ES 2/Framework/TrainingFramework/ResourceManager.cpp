@@ -203,7 +203,7 @@ void ResourceManager::LoadAndAllocateResourceData(const char* resourceManagerPat
 		sscanf_s(limit, "COLOR %f, %f, %f", &m_RmLightSource[i].m_lightColor.x, &m_RmLightSource[i].m_lightColor.y, &m_RmLightSource[i].m_lightColor.z);	
 	}
 	i = 0;
-	fclose(resourceFile);		
+	fclose(resourceFile);
 }
 
 

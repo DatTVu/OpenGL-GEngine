@@ -42,8 +42,6 @@ GLuint colorTexId;
 GLuint depthTexId;
 unsigned int quadVBO;
 unsigned int quadIBO;
-#define COLOR_TEXTURE 0
-#define DEPTH_TEXTURE 1
 Shaders quadShaders;
 ////////////////////////
 
@@ -103,8 +101,8 @@ int Init ( ESContext *esContext )
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(idx), idx, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	//quadShaders.Init("../Resources/Shaders/FrameBufferVS.vs", "../Resources/Shaders/FrameBufferFS.fs");
-	//quadShaders.Init("../Resources/Shaders/BlackWhiteVS.vs", "../Resources/Shaders/BlackWhiteFS.fs");
-	quadShaders.Init("../Resources/Shaders/BlurEffectVS.vs", "../Resources/Shaders/BlurEffectFS.fs");
+	quadShaders.Init("../Resources/Shaders/BlackWhiteVS.vs", "../Resources/Shaders/BlackWhiteFS.fs");
+	//quadShaders.Init("../Resources/Shaders/BlurEffectVS.vs", "../Resources/Shaders/BlurEffectFS.fs");
 	
 	
 	////////////////////////
@@ -173,6 +171,16 @@ void Draw ( ESContext *esContext )
 	if (iTextureLoc != -1)
 	{
 		glUniform1i(iTextureLoc, 0);
+	}
+	unsigned int i32Location;
+	if ((i32Location = glGetUniformLocation(quadShaders.program, "step")) != -1)
+	{
+		int k = 43;
+		float x = 1.0f / esContext->width;
+		float y = 1.0f / esContext->height;
+		float z = sqrt(2.0f) / 2.0f * x;
+		float w = sqrt(2.0f) / 2.0f * y;
+		glUniform4f(i32Location, k * x, k * y, k * z, k * w);
 	}
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

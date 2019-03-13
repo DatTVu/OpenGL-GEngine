@@ -45,6 +45,7 @@ int Shaders::Init(char * fileVertexShader, char * fileFragmentShader)
 	lightColorUniform1 = glGetUniformLocation(program, "u_LightColor1");
 	lightPosUniform2 = glGetUniformLocation(program, "u_LightPos2");
 	lightColorUniform2 = glGetUniformLocation(program, "u_LightColor2");
+	stepUniform = glGetUniformLocation(program, "step");
 	return 0;
 }
 

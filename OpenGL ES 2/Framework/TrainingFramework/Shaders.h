@@ -28,7 +28,9 @@ public:
 	GLuint lightColorUniform1;
 	GLuint lightPosUniform2;
 	GLuint lightColorUniform2;
+	GLuint stepUniform;
 	int m_RmShaderID;
+	int m_EmShaderID;
 	int Init(char * fileVertexShader, char * fileFragmentShader);
 	Shaders();	
 	~Shaders();
