@@ -1,0 +1,9 @@
+attribute vec3 a_posL;
+attribute vec2 a_texCoord;
+varying vec2 vTexCoord;
+void main(void)
+{
+// Clean up inaccuracies
+gl_Position = vec4(a_posL.xy, 0.0, 1.0);
+vTexCoord = a_texCoord;
+}

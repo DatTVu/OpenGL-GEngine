@@ -57,13 +57,17 @@ GLuint colorTexId3;
 ///Frame buffer object4//
 GLuint framebuffer4;
 GLuint colorTexId4;
-
+////////////////////////
+float farPlane = -1.0f;
+float nearPlane = 0.4f;
+float clarity = 8.0f;
+float fadeuni = 10.0f;
 
 int Init ( ESContext *esContext )
 {
 	glClearColor ( 1.0f, 1.0f, 1.0f, 1.0f );	
 
-	projectionMatrix = projectionMatrix.SetPerspective((float)0.25*3.14, (float)(960/720), (float)0.4, (float)-1.0);
+	projectionMatrix = projectionMatrix.SetPerspective((float)0.25*3.14, (float)(960/720), nearPlane, farPlane);
 
 	////////////////////////
 	///Frame buffer object//
@@ -172,8 +176,9 @@ int Init ( ESContext *esContext )
 	//quadShaders.Init("../Resources/Shaders/FrameBufferVS.vs", "../Resources/Shaders/FrameBufferFS.fs");
 	//quadShaders.Init("../Resources/Shaders/BlackWhiteVS.vs", "../Resources/Shaders/BlackWhiteFS.fs");
 	quadShaders.Init("../Resources/Shaders/BlurEffectVS.vs", "../Resources/Shaders/BlurEffectFS.fs");
-	quadShaders2.Init("../Resources/Shaders/PreBloomVS.vs", "../Resources/Shaders/PreBloomFS.fs");
-	quadShaders3.Init("../Resources/Shaders/PostBloomVS.vs", "../Resources/Shaders/PostBloomFS.fs");
+	//quadShaders2.Init("../Resources/Shaders/PreBloomVS.vs", "../Resources/Shaders/PreBloomFS.fs");
+	//quadShaders3.Init("../Resources/Shaders/PostBloomVS.vs", "../Resources/Shaders/PostBloomFS.fs");	
+	quadShaders2.Init("../Resources/Shaders/PostDoFVS.vs", "../Resources/Shaders/PostDoFFS.fs");
 	
 	
 	////////////////////////
@@ -217,42 +222,47 @@ void Draw ( ESContext *esContext )
 	trans.SetTranslation(0.0, 0.0, 0.0);
 	WVP = trans * WVP;
 	SceneManager::GetInstance()->Draw(WVP, camera1.GetPos());
-	/////////////////////////////////////////////////////
-	/////////// PRE BLOOM////////////////////////////////
-	glDisable(GL_DEPTH_TEST);
+	/////////////BLUR/////////////////////////////////////
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer2);
-	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	//glClear(GL_COLOR_BUFFER_BIT);
-	glUseProgram(quadShaders2.program);	
+	glDisable(GL_DEPTH_TEST);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glUseProgram(quadShaders.program);
 	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadIBO);
-	if(quadShaders2.positionAttribute != -1)
+	if (quadShaders.positionAttribute != -1)
 	{
-		glEnableVertexAttribArray(quadShaders2.positionAttribute);
-		glVertexAttribPointer(quadShaders2.positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+		glEnableVertexAttribArray(quadShaders.positionAttribute);
+		glVertexAttribPointer(quadShaders.positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 	}
-	if (quadShaders2.textureAttribute != -1)
+	if (quadShaders.textureAttribute != -1)
 	{
-		glEnableVertexAttribArray(quadShaders2.textureAttribute);
-		glVertexAttribPointer(quadShaders2.textureAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal + sizebinormal + sizetangent);
-	}	
+		glEnableVertexAttribArray(quadShaders.textureAttribute);
+		glVertexAttribPointer(quadShaders.textureAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal + sizebinormal + sizetangent);
+	}
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, colorTexId);
-	int preBloomText = glGetUniformLocation(quadShaders2.program, "u_Texture0");
-	if (preBloomText != -1)
+	int blurPass1Tex = glGetUniformLocation(quadShaders.program, "u_Texture0");
+	if (blurPass1Tex != -1)
 	{
-		glUniform1i(preBloomText, 0);
-	}	
+		glUniform1i(blurPass1Tex, 0);
+	}
+	unsigned int blurPass1Step;
+	if ((blurPass1Step = glGetUniformLocation(quadShaders.program, "step")) != -1)
+	{
+		int k = 3;
+		float x = 1.0f / esContext->width;
+		float y = 1.0f / esContext->height;
+		float z = sqrt(2.0f) / 2.0f * x;
+		float w = sqrt(2.0f) / 2.0f * y;
+		glUniform4f(blurPass1Step, k * x, k * y, k * z, k * w);
+	}
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
-	/////////////////////////////////////////////////////
-	///////////BLUR PASS 1///////////////////////////////
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer3);
-	//glDisable(GL_DEPTH_TEST);
-	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	//glClear(GL_COLOR_BUFFER_BIT);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	////////////////////BLUR 2nd pass////////////////////////////////
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer3);	
 	glUseProgram(quadShaders.program);
 	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadIBO);
@@ -268,31 +278,27 @@ void Draw ( ESContext *esContext )
 	}
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, colorTexId2);
-	int blurpass1Tex = glGetUniformLocation(quadShaders2.program, "u_Texture0");
-	if (blurpass1Tex != -1)
+	int blurPass2Tex = glGetUniformLocation(quadShaders.program, "u_Texture0");
+	if (blurPass2Tex != -1)
 	{
-		glUniform1i(blurpass1Tex, 0);
+		glUniform1i(blurPass2Tex, 0);
 	}
-	unsigned int blurpass1Pas;
-	if ((blurpass1Pas = glGetUniformLocation(quadShaders.program, "step")) != -1)
+	unsigned int blurPass2Step;
+	if ((blurPass2Step = glGetUniformLocation(quadShaders.program, "step")) != -1)
 	{
 		int k = 5;
 		float x = 1.0f / esContext->width;
 		float y = 1.0f / esContext->height;
 		float z = sqrt(2.0f) / 2.0f * x;
 		float w = sqrt(2.0f) / 2.0f * y;
-		glUniform4f(blurpass1Pas, k * x, k * y, k * z, k * w);
+		glUniform4f(blurPass2Step, k * x, k * y, k * z, k * w);
 	}
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	/////////////////////////////////////////////////////
-	///////////BLUR PASS 2///////////////////////////////
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer4);
-	//glDisable(GL_DEPTH_TEST);
-	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	//glClear(GL_COLOR_BUFFER_BIT);
+	////////////////////BLUR 3rd pass////////////////////////////////
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer4);	
 	glUseProgram(quadShaders.program);
 	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadIBO);
@@ -308,58 +314,75 @@ void Draw ( ESContext *esContext )
 	}
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, colorTexId3);
-	int blurpass2Tex = glGetUniformLocation(quadShaders.program, "u_Texture0");
-	if (blurpass2Tex != -1)
+	int blurPass3Tex = glGetUniformLocation(quadShaders.program, "u_Texture0");
+	if (blurPass3Tex != -1)
 	{
-		glUniform1i(blurpass2Tex, 0);
+		glUniform1i(blurPass3Tex, 0);
 	}
-	unsigned int blurpass2Step;
-	if ((blurpass2Step = glGetUniformLocation(quadShaders.program, "step")) != -1)
+	unsigned int blurPass3Step;
+	if ((blurPass3Step = glGetUniformLocation(quadShaders.program, "step")) != -1)
 	{
-		int k = 5;
+		int k = 9;
 		float x = 1.0f / esContext->width;
 		float y = 1.0f / esContext->height;
 		float z = sqrt(2.0f) / 2.0f * x;
 		float w = sqrt(2.0f) / 2.0f * y;
-		glUniform4f(blurpass2Step, k * x, k * y, k * z, k * w);
+		glUniform4f(blurPass3Step, k * x, k * y, k * z, k * w);
 	}
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	/////////////////////////////////////////////////////
-	///////////POST BLOOM////////////////////////////////
+	///////////DOF///////////////////////////////////////
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	//glClear(GL_COLOR_BUFFER_BIT);
-
-	glUseProgram(quadShaders3.program);
+	glUseProgram(quadShaders2.program);
 	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadIBO);
-	if (quadShaders3.positionAttribute != -1)
+	if (quadShaders2.positionAttribute != -1)
 	{
-		glEnableVertexAttribArray(quadShaders3.positionAttribute);
-		glVertexAttribPointer(quadShaders3.positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+		glEnableVertexAttribArray(quadShaders2.positionAttribute);
+		glVertexAttribPointer(quadShaders2.positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 	}
-	if (quadShaders3.textureAttribute != -1)
+	if (quadShaders2.textureAttribute != -1)
 	{
-		glEnableVertexAttribArray(quadShaders3.textureAttribute);
-		glVertexAttribPointer(quadShaders3.textureAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal + sizebinormal + sizetangent);
+		glEnableVertexAttribArray(quadShaders2.textureAttribute);
+		glVertexAttribPointer(quadShaders2.textureAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal + sizebinormal + sizetangent);
 	}
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, colorTexId);
-	int postBloomColorTex = glGetUniformLocation(quadShaders3.program, "u_Texture0");
-	if (postBloomColorTex != -1)
+	int originTexture = glGetUniformLocation(quadShaders2.program, "u_Texture0");
+	if (originTexture != -1)
 	{
-		glUniform1i(postBloomColorTex, 0);
+		glUniform1i(originTexture, 0);
 	}
+
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, colorTexId4);
-	int postBloomBlurTex = glGetUniformLocation(quadShaders3.program, "u_Texture1");
-	if (postBloomBlurTex != -1)
+	int blurredTex = glGetUniformLocation(quadShaders2.program, "u_Texture1");
+	if (blurredTex != -1)
 	{
-		glUniform1i(postBloomBlurTex, 1);
-	}	
+		glUniform1f(blurredTex, 1);
+	}
+
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, depthTexId);
+	int depthTex = glGetUniformLocation(quadShaders2.program, "u_Texture2");
+	if (depthTex != -1)
+	{
+		glUniform1i(depthTex, 2);
+	}
+	unsigned int DoFStep;
+	if ((DoFStep = glGetUniformLocation(quadShaders2.program, "step")) != -1)
+	{
+		int k = 16;
+		float x = 1.0f / esContext->width;
+		float y = 1.0f / esContext->height;
+		float z = sqrt(2.0f) / 2.0f * x;
+		float w = sqrt(2.0f) / 2.0f * y;
+		glUniform4f(DoFStep, k * x, k * y, k * z, k * w);
+	}
+
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

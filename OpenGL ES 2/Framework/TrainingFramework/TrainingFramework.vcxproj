@@ -147,6 +147,12 @@
     <None Include="..\Resources\Shaders\NormalMapVS.vs" />
     <None Include="..\Resources\Shaders\PhongShadingFS.fs" />
     <None Include="..\Resources\Shaders\PhongShadingVS.vs" />
+    <None Include="..\Resources\Shaders\PostBloomFS.fs" />
+    <None Include="..\Resources\Shaders\PostBloomVS.vs" />
+    <None Include="..\Resources\Shaders\PostDoFFS.fs" />
+    <None Include="..\Resources\Shaders\PostDoFVS.vs" />
+    <None Include="..\Resources\Shaders\PreBloomFS.fs" />
+    <None Include="..\Resources\Shaders\PreBloomVS.vs" />
     <None Include="..\Resources\Shaders\ReflectionFS.fs" />
     <None Include="..\Resources\Shaders\ReflectionVS.vs" />
     <None Include="..\Resources\Shaders\TerrainGridFS.fs" />

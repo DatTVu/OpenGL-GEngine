@@ -19,6 +19,7 @@ public:
 	void MoveSideWay(float delTime);
 	void RotateAroundY(float delTime);
 	void RotateAroundX(float delTime);
-	Vector3 GetPos();	
+	Vector3 GetPos();
+	Vector3 GetTargetPos();
 };
 
