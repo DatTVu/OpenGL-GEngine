@@ -43,8 +43,16 @@ GLuint depthTexId;
 unsigned int quadVBO;
 unsigned int quadIBO;
 Shaders quadShaders;
-////////////////////////
-
+/////////////////////////
+///Frame buffer object2//
+GLuint framebuffer2;
+GLuint colorTexId2;
+GLuint depthTexId2;
+/////////////////////////
+///Frame buffer object3//
+GLuint framebuffer3;
+GLuint colorTexId3;
+GLuint depthTexId3;
 int Init ( ESContext *esContext )
 {
 	glClearColor ( 1.0f, 1.0f, 1.0f, 1.0f );	
@@ -78,6 +86,61 @@ int Init ( ESContext *esContext )
 	else { cout << "Frame Buffer is not finished" << endl; }
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+
+	////////////////////////
+	///Frame buffer object2//
+	glGenFramebuffers(1, &framebuffer2);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer2);
+
+	glGenTextures(1, &colorTexId2);
+	glBindTexture(GL_TEXTURE_2D, colorTexId2);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Globals::screenWidth, Globals::screenHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexId2, 0);
+
+	glGenTextures(1, &depthTexId2);
+	glBindTexture(GL_TEXTURE_2D, depthTexId2);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, Globals::screenWidth, Globals::screenHeight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, NULL);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexId2, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) {}
+	else { cout << "Frame Buffer is not finished" << endl; }
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	////////////////////////
+	///Frame buffer object2//
+	glGenFramebuffers(1, &framebuffer3);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer3);
+
+	glGenTextures(1, &colorTexId3);
+	glBindTexture(GL_TEXTURE_2D, colorTexId3);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Globals::screenWidth, Globals::screenHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexId3, 0);
+
+	glGenTextures(1, &depthTexId3);
+	glBindTexture(GL_TEXTURE_2D, depthTexId3);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, Globals::screenWidth, Globals::screenHeight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, NULL);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexId3, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) {}
+	else { cout << "Frame Buffer is not finished" << endl; }
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	Vertex quadVertices[4];
 	quadVertices[0].pos.x =  1.0f;  quadVertices[0].pos.y =  1.0f;  quadVertices[0].pos.z = 0.0f;
 	quadVertices[1].pos.x =  1.0f;  quadVertices[1].pos.y = -1.0f;  quadVertices[1].pos.z = 0.0f;
@@ -101,8 +164,8 @@ int Init ( ESContext *esContext )
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(idx), idx, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	//quadShaders.Init("../Resources/Shaders/FrameBufferVS.vs", "../Resources/Shaders/FrameBufferFS.fs");
-	quadShaders.Init("../Resources/Shaders/BlackWhiteVS.vs", "../Resources/Shaders/BlackWhiteFS.fs");
-	//quadShaders.Init("../Resources/Shaders/BlurEffectVS.vs", "../Resources/Shaders/BlurEffectFS.fs");
+	//quadShaders.Init("../Resources/Shaders/BlackWhiteVS.vs", "../Resources/Shaders/BlackWhiteFS.fs");
+	quadShaders.Init("../Resources/Shaders/BlurEffectVS.vs", "../Resources/Shaders/BlurEffectFS.fs");
 	
 	
 	////////////////////////
@@ -146,12 +209,11 @@ void Draw ( ESContext *esContext )
 	trans.SetTranslation(0.0, 0.0, 0.0);
 	WVP = trans * WVP;
 	SceneManager::GetInstance()->Draw(WVP, camera1.GetPos());
-	
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	/////////////////////////////////////////////////////
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer2);
 	glDisable(GL_DEPTH_TEST);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-
 	glUseProgram(quadShaders.program);	
 	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadIBO);
@@ -175,7 +237,47 @@ void Draw ( ESContext *esContext )
 	unsigned int i32Location;
 	if ((i32Location = glGetUniformLocation(quadShaders.program, "step")) != -1)
 	{
-		int k = 43;
+		int k = 5;
+		float x = 1.0f / esContext->width;
+		float y = 1.0f / esContext->height;
+		float z = sqrt(2.0f) / 2.0f * x;
+		float w = sqrt(2.0f) / 2.0f * y;
+		glUniform4f(i32Location, k * x, k * y, k * z, k * w);
+	}
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	////////////////////////////////////////////////////
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glUseProgram(quadShaders.program);
+	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadIBO);
+	if (quadShaders.positionAttribute != -1)
+	{
+		glEnableVertexAttribArray(quadShaders.positionAttribute);
+		glVertexAttribPointer(quadShaders.positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+	}
+	if (quadShaders.textureAttribute != -1)
+	{
+		glEnableVertexAttribArray(quadShaders.textureAttribute);
+		glVertexAttribPointer(quadShaders.textureAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal + sizebinormal + sizetangent);
+	}
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, colorTexId2);
+	//int iTextureLoc = glGetUniformLocation(quadShaders.program, "u_Texture0");
+	if (iTextureLoc != -1)
+	{
+		glUniform1i(iTextureLoc, 1);
+	}
+	//unsigned int i32Location;
+	if ((i32Location = glGetUniformLocation(quadShaders.program, "step")) != -1)
+	{
+		int k = 17;
 		float x = 1.0f / esContext->width;
 		float y = 1.0f / esContext->height;
 		float z = sqrt(2.0f) / 2.0f * x;
