@@ -8,8 +8,8 @@ varying vec2 vTexCoord;
 float CalculateMixFactor(vec2 uv)
 {
  float near = 2.0;
- float far = -20.0;
- float fade = 5.0;
+ float far = 50.0;
+ float fade = 8.0;
  float clarity = 10.0;
  
  float depth = texture2D(u_Texture2, uv).x;
