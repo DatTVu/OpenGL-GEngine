@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "EffectsManager.h"
+#include "SceneManager.h"
 #include "Vertex.h"
 #include <iostream>
 
@@ -113,6 +114,7 @@ void EffectsManager::LoadData(const char* effectManagerPath) {
 
 	fgets(limit, sizeof(limit), effectFile);
 	sscanf_s(limit, "#Effects: %d", &count);
+	m_EffectCount = count;
 	m_EmEffect = new Effects[count];
 	while (!feof(effectFile) && i < count) {
 		fgets(limit, sizeof(limit), effectFile);
@@ -141,9 +143,80 @@ void EffectsManager::LoadData(const char* effectManagerPath) {
 				fgets(limit, sizeof(limit), effectFile);
 				sscanf_s(limit, "DepthTexture: %d", &m_EmEffect[i].m_effectPass[k].m_passDepthTextureID[l]);
 			}
-			
+			fgets(limit, sizeof(limit), effectFile);
+			sscanf_s(limit, "#Target: %d", &m_EmEffect[i].m_effectPass[k].m_passTarget);
+			fgets(limit, sizeof(limit), effectFile);
+			sscanf_s(limit, "#OtherData: %d", &m_EmEffect[i].m_effectPass[k].m_passOtherData);
 		}
 	}
 	i = 0;
 	fclose(effectFile);
+}
+
+void EffectsManager::Draw(Matrix mvp, Vector3 camPos, ESContext *esContext) {
+	glBindFramebuffer(GL_FRAMEBUFFER, m_framebufferID[0]);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	SceneManager::GetInstance()->Draw(mvp, camPos);
+	for (int i = 0; i < m_EffectCount; i++) {
+		for (int j = 0; j < m_EmEffect[i].m_effectPassCount; j++) {			
+			glBindBuffer(GL_FRAMEBUFFER, m_framebufferID[m_EmEffect[i].m_effectPass[j].m_passTarget]);
+			glDisable(GL_DEPTH_TEST);
+			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
+			glUseProgram(m_effectShaders[m_EmEffect[i].m_effectPass[j].m_passShaderID].program);
+			glBindBuffer(GL_ARRAY_BUFFER, m_quadVBO);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_quadIBO);
+
+			if (m_effectShaders[m_EmEffect[i].m_effectPass[j].m_passShaderID].positionAttribute != -1)
+			{
+				glEnableVertexAttribArray(m_effectShaders[m_EmEffect[i].m_effectPass[j].m_passShaderID].positionAttribute);
+				glVertexAttribPointer(m_effectShaders[m_EmEffect[i].m_effectPass[j].m_passShaderID].positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+			}
+			if (m_effectShaders[m_EmEffect[i].m_effectPass[j].m_passShaderID].textureAttribute != -1)
+			{
+				glEnableVertexAttribArray(m_effectShaders[m_EmEffect[i].m_effectPass[j].m_passShaderID].textureAttribute);
+				glVertexAttribPointer(m_effectShaders[m_EmEffect[i].m_effectPass[j].m_passShaderID].textureAttribute, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)0 + sizepos + sizenormal + sizebinormal + sizetangent);
+			}
+			for (int k = 0; k < m_EmEffect[i].m_effectPass[j].m_passColorTextureCount; k++)
+			{
+				glActiveTexture(GL_TEXTURE0+k);
+				string tempPath = "u_Texture" + to_string(k);
+				glBindTexture(GL_TEXTURE_2D, m_EmEffect[i].m_effectPass[j].m_passColorTextureID[k]);
+				int iTextureLoc = glGetUniformLocation(m_effectShaders[m_EmEffect[i].m_effectPass[j].m_passShaderID].program, &tempPath[0]);
+				if (iTextureLoc != -1)
+				{
+					glUniform1i(iTextureLoc, 0);
+				}
+			}
+			for (int l = 0; l < m_EmEffect[i].m_effectPass[j].m_passDepthTextureCount; l++)
+			{
+				glActiveTexture(GL_TEXTURE0 + m_EmEffect[i].m_effectPass[j].m_passColorTextureCount +l);
+				string tempPath = "u_Texture" + to_string(l);
+				glBindTexture(GL_TEXTURE_2D, m_EmEffect[i].m_effectPass[j].m_passDepthTextureID[l]);
+				int iDepthTextureLoc = glGetUniformLocation(m_effectShaders[m_EmEffect[i].m_effectPass[j].m_passShaderID].program, &tempPath[0]);
+				if (iDepthTextureLoc != -1)
+				{
+					glUniform1i(iDepthTextureLoc, 0);
+				}
+			}
+			unsigned int stepUniform;
+			if ((stepUniform = glGetUniformLocation(m_effectShaders[m_EmEffect[i].m_effectPass[j].m_passShaderID].program, "step")) != -1)
+			{
+				int k = m_EmEffect[i].m_effectPass[j].m_passOtherData;
+				float x = 1.0f / esContext->width;
+				float y = 1.0f / esContext->height;
+				float z = sqrt(2.0f) / 2.0f * x;
+				float w = sqrt(2.0f) / 2.0f * y;
+				glUniform4f(stepUniform, k * x, k * y, k * z, k * w);
+			}
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+			glBindTexture(GL_TEXTURE_2D, 0);
+		 }
+	}
 }

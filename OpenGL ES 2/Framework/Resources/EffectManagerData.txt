@@ -1,10 +1,16 @@
-#Shaders: 2
+#Shaders: 4
 ID 0
-VS BlackWhiteVS.vs
-FS BlackWhiteFS.fs
+VS PreBloomVS.vs
+FS PreBloomFS.fs
 ID 1
+VS PostBloomVS.vs
+FS PostBloomFS.fs
+ID 2
 VS BlurEffectVS.vs
 FS BlurEffectFS.fs
+ID 3
+VS BlackWhiteVS.vs
+FS BlackWhiteFS.fs
 
 #FBO: 3
 
@@ -14,41 +20,43 @@ Name BW
 NoPasses: 1
 PassID 0
 PassName BW
-   ShaderID 0
+   ShaderID 3
    ColorTextureCount: 1  
-   ColorTexture: 1
-   DepthTextureCount: 1
-   DepthTexture: 1
-   Target: 0
-   OtherData: 0.0
-   
+   ColorTexture: 0
+   DepthTextureCount: 0   
+   Target: 1
+   OtherData: 0.0   
 ID 1
 Name Bloom
-NoPasses: 3
+NoPasses: 4
 PassID 0
 PassName Prebloom
-   ShaderID 1
+   ShaderID 0
    ColorTextureCount: 1  
-   ColorTexture: 1
-   DepthTextureCount: 1
-   DepthTexture: 1
+   ColorTexture: 1   
    Target: 2
    OtherData: 0.5 
 PassID 1
 PassName Blur
    ShaderID 2
    ColorTextureCount: 1  
-   ColorTexture: 1
-   DepthTextureCount: 1
-   DepthTexture: 1
-   Target: 3
+   ColorTexture: 2
+   DepthTextureCount: 0   
+   Target: 1
    OtherData: 5.0
 PassID 2
 PassName Blur
    ShaderID 2
    ColorTextureCount: 1  
    ColorTexture: 1
-   DepthTextureCount: 1
-   DepthTexture: 1
+   DepthTextureCount: 0   
    Target: 2
    OtherData: 9.0
+PassID 3
+PassName Postbloom
+   ShaderID 1
+   ColorTextureCount: 2  
+   ColorTexture: 0   
+   ColorTexture: 2
+   Target: 0
+   OtherData: 0.5 

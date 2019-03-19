@@ -9,7 +9,7 @@ public:
 	int m_passDepthTextureCount;
 	int *m_passDepthTextureID;
 	float m_passOtherData;
-
+	int m_passTarget;
 	Pass();
 	Pass(int passID, int passShaderID, int passColorTextureCount, int *passColorTextureID, int passDepthTextureCount,
 	int *passDepthTextureID, float passOtherData);

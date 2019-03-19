@@ -11,6 +11,7 @@ private:
 	unsigned int m_quadVBO;
 	unsigned int m_quadIBO;
 	Shaders *m_effectShaders;
+	int m_EffectCount;
 protected:
 	Effects* m_EmEffect;
 	EffectsManager() {}
@@ -40,6 +41,7 @@ public:
 
 	void CreateQuad();
 	void LoadData(const char* effectManagerPath);
+	void Draw(Matrix mvp, Vector3 camPos, ESContext *esContext);
 	
 
 protected:

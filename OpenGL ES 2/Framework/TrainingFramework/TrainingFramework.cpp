@@ -14,6 +14,7 @@
 #include <conio.h>
 #include <iostream>
 #include "Heightmap.h"
+#include "EffectsManager.h"
 
 using namespace std;
 
@@ -37,7 +38,7 @@ int turnUp = 0;
 int turnDown = 0;
 ////////////////////////
 ///Frame buffer object//
-GLuint framebuffer;
+/*GLuint framebuffer;
 GLuint colorTexId;
 GLuint depthTexId;
 unsigned int quadVBO;
@@ -59,7 +60,7 @@ GLuint depthTexId3;
 ///Frame buffer object4//
 GLuint framebuffer4;
 GLuint colorTexId4;
-GLuint depthTexId4;
+GLuint depthTexId4;*/
 ////////////////////////
 float farPlane = -1.0f;
 float nearPlane = 0.4f;
@@ -74,7 +75,7 @@ int Init ( ESContext *esContext )
 
 	////////////////////////
 	///Frame buffer object//
-	glGenFramebuffers(1, &framebuffer);
+	/*glGenFramebuffers(1, &framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
 	glGenTextures(1, &colorTexId);
@@ -212,7 +213,7 @@ int Init ( ESContext *esContext )
 	quadShaders.Init("../Resources/Shaders/BlurEffectVS.vs", "../Resources/Shaders/BlurEffectFS.fs");
 	//quadShaders2.Init("../Resources/Shaders/PreBloomVS.vs", "../Resources/Shaders/PreBloomFS.fs");
 	//quadShaders3.Init("../Resources/Shaders/PostBloomVS.vs", "../Resources/Shaders/PostBloomFS.fs");	
-	quadShaders2.Init("../Resources/Shaders/PostDoFVS.vs", "../Resources/Shaders/PostDoFFS.fs");
+	quadShaders2.Init("../Resources/Shaders/PostDoFVS.vs", "../Resources/Shaders/PostDoFFS.fs");*/
 	
 	
 	////////////////////////
@@ -223,6 +224,12 @@ int Init ( ESContext *esContext )
 	SceneManager::CreateInstance();
 
 	SceneManager::GetInstance()->LoadAndAllocateSceneData(k_sceneManagerPath);
+
+	EffectsManager::CreateInstance();
+
+	EffectsManager::GetInstance()->CreateQuad();
+
+	EffectsManager::GetInstance()->LoadData("../Resources/EffectManagerData.txt");
 	
 	SceneManager::GetInstance()->SetMeshPointerToRM(ResourceManager::GetInstance()->GetMeshData());
 
@@ -245,7 +252,12 @@ int Init ( ESContext *esContext )
 
 void Draw ( ESContext *esContext )
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);	
+	WVP = camera1.CalculateViewMatrix() * projectionMatrix;
+	Matrix trans;
+	trans.SetTranslation(0.0, 0.0, 0.0);
+	WVP = trans * WVP;
+	EffectsManager::GetInstance()->Draw(WVP, camera1.GetPos(), esContext);
+	/*glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -289,7 +301,7 @@ void Draw ( ESContext *esContext )
 		float y = 1.0f / esContext->height;
 		float z = sqrt(2.0f) / 2.0f * x;
 		float w = sqrt(2.0f) / 2.0f * y;
-		glUniform4f(blurPass1Step, k * x, k * y, k * z, k * w);
+		glUniform4f(blurPass1Step, k * x, k * y, k * z, k * w); 
 	}
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -420,7 +432,7 @@ void Draw ( ESContext *esContext )
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);*/
 
 	eglSwapBuffers ( esContext->eglDisplay, esContext->eglSurface );
 }
