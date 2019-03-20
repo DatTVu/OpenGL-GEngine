@@ -17,46 +17,48 @@ FS BlackWhiteFS.fs
 #Effects: 2
 ID 0
 Name BW
-NoPasses: 1
+NoPasses 1
 PassID 0
 PassName BW
-   ShaderID 3
-   ColorTextureCount: 1  
-   ColorTexture: 0
-   DepthTextureCount: 0   
-   Target: 1
-   OtherData: 0.0   
+ShaderID 3
+ColorTextureCount 1  
+ColorTexture 0
+DepthTextureCount 0   
+Target 1
+OtherData 0.0   
 ID 1
 Name Bloom
-NoPasses: 4
+NoPasses 4
 PassID 0
 PassName Prebloom
-   ShaderID 0
-   ColorTextureCount: 1  
-   ColorTexture: 1   
-   Target: 2
-   OtherData: 0.5 
+ShaderID 0
+ColorTextureCount 1  
+ColorTexture 1
+DepthTextureCount 0   
+Target 2
+OtherData 0.5 
 PassID 1
 PassName Blur
-   ShaderID 2
-   ColorTextureCount: 1  
-   ColorTexture: 2
-   DepthTextureCount: 0   
-   Target: 1
-   OtherData: 5.0
+ShaderID 2
+ColorTextureCount 1  
+ColorTexture 2
+DepthTextureCount 0   
+Target 1
+OtherData 5.0
 PassID 2
 PassName Blur
-   ShaderID 2
-   ColorTextureCount: 1  
-   ColorTexture: 1
-   DepthTextureCount: 0   
-   Target: 2
-   OtherData: 9.0
+ShaderID 2
+ColorTextureCount 1  
+ColorTexture 1
+DepthTextureCount 0   
+Target 2
+OtherData 9.0
 PassID 3
 PassName Postbloom
-   ShaderID 1
-   ColorTextureCount: 2  
-   ColorTexture: 0   
-   ColorTexture: 2
-   Target: 0
-   OtherData: 0.5 
+ShaderID 1
+ColorTextureCount 2  
+ColorTexture 0   
+ColorTexture 2
+DepthTextureCount 0
+Target -1
+OtherData 0.5 

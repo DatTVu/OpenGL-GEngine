@@ -95,6 +95,7 @@ void EffectsManager::LoadData(const char* effectManagerPath) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Globals::screenWidth, Globals::screenHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colorTexID[j], 0);
+		glBindTexture(GL_TEXTURE_2D, 0);
 
 		glGenTextures(1, &m_depthTexID[j]);
 		glBindTexture(GL_TEXTURE_2D, m_depthTexID[j]);
@@ -118,36 +119,39 @@ void EffectsManager::LoadData(const char* effectManagerPath) {
 	m_EmEffect = new Effects[count];
 	while (!feof(effectFile) && i < count) {
 		fgets(limit, sizeof(limit), effectFile);
-		sscanf_s(limit, "#ID %d", &m_EmEffect[i].m_effectID);
+		sscanf_s(limit, "ID %d", &m_EmEffect[i].m_effectID);
 		fgets(limit, sizeof(limit), effectFile); //Skip effect name
-		fgets(limit, sizeof(limit), effectFile);
-		sscanf_s(limit, "#NoPasses: %d", &m_EmEffect[i].m_effectPassCount);
-		m_EmEffect[i].m_effectPass = new Pass[m_EmEffect[i].m_effectPassCount];
+		fgets(limit, sizeof(limit), effectFile);		
+		int passCount = 0;
+		sscanf_s(limit, "NoPasses %d", &passCount);
+		m_EmEffect[i].m_effectPassCount = passCount;
+ 		m_EmEffect[i].m_effectPass = new Pass[m_EmEffect[i].m_effectPassCount];
 		for (int k = 0; k < m_EmEffect[i].m_effectPassCount; k++) {
 			fgets(limit, sizeof(limit), effectFile);
-			sscanf_s(limit, "#PassID %d", &m_EmEffect[i].m_effectPass[k].m_passID);
+			sscanf_s(limit, "PassID %d", &m_EmEffect[i].m_effectPass[k].m_passID);
 			fgets(limit, sizeof(limit), effectFile); //Skip pass name
 			fgets(limit, sizeof(limit), effectFile);
-			sscanf_s(limit, "#ShaderID %d", &m_EmEffect[i].m_effectPass[k].m_passShaderID);
+			sscanf_s(limit, "ShaderID %d", &m_EmEffect[i].m_effectPass[k].m_passShaderID);
 			fgets(limit, sizeof(limit), effectFile);
-			sscanf_s(limit, "#ColorTextureCount: %d", &m_EmEffect[i].m_effectPass[k].m_passColorTextureCount);
+			sscanf_s(limit, "ColorTextureCount %d", &m_EmEffect[i].m_effectPass[k].m_passColorTextureCount);
 			m_EmEffect[i].m_effectPass[k].m_passColorTextureID = new int[m_EmEffect[i].m_effectPass[k].m_passColorTextureCount];
 			for (int l = 0; l < m_EmEffect[i].m_effectPass[k].m_passColorTextureCount; l++) {
 				fgets(limit, sizeof(limit), effectFile);
-				sscanf_s(limit, "#ColorTexture: %d", &m_EmEffect[i].m_effectPass[k].m_passColorTextureID[l]);
+				sscanf_s(limit, "ColorTexture %d", &m_EmEffect[i].m_effectPass[k].m_passColorTextureID[l]);
 			}
 			fgets(limit, sizeof(limit), effectFile);
-			sscanf_s(limit, "#DepthTextureCount: %d", &m_EmEffect[i].m_effectPass[k].m_passDepthTextureCount);
+			sscanf_s(limit, "DepthTextureCount %d", &m_EmEffect[i].m_effectPass[k].m_passDepthTextureCount);
 			m_EmEffect[i].m_effectPass[k].m_passDepthTextureID = new int[m_EmEffect[i].m_effectPass[k].m_passDepthTextureCount];
-			for (int l = 0; l < m_EmEffect[i].m_effectPass[k].m_passDepthTextureCount; l++) {
+			for (int m = 0; m < m_EmEffect[i].m_effectPass[k].m_passDepthTextureCount; m++) {
 				fgets(limit, sizeof(limit), effectFile);
-				sscanf_s(limit, "DepthTexture: %d", &m_EmEffect[i].m_effectPass[k].m_passDepthTextureID[l]);
+				sscanf_s(limit, "DepthTexture %d", &m_EmEffect[i].m_effectPass[k].m_passDepthTextureID[m]);
 			}
 			fgets(limit, sizeof(limit), effectFile);
-			sscanf_s(limit, "#Target: %d", &m_EmEffect[i].m_effectPass[k].m_passTarget);
+			sscanf_s(limit, "Target %d", &m_EmEffect[i].m_effectPass[k].m_passTarget);
 			fgets(limit, sizeof(limit), effectFile);
-			sscanf_s(limit, "#OtherData: %d", &m_EmEffect[i].m_effectPass[k].m_passOtherData);
+			sscanf_s(limit, "OtherData %f", &m_EmEffect[i].m_effectPass[k].m_passOtherData);
 		}
+		i++;
 	}
 	i = 0;
 	fclose(effectFile);
@@ -162,8 +166,13 @@ void EffectsManager::Draw(Matrix mvp, Vector3 camPos, ESContext *esContext) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	SceneManager::GetInstance()->Draw(mvp, camPos);
 	for (int i = 0; i < m_EffectCount; i++) {
-		for (int j = 0; j < m_EmEffect[i].m_effectPassCount; j++) {			
-			glBindBuffer(GL_FRAMEBUFFER, m_framebufferID[m_EmEffect[i].m_effectPass[j].m_passTarget]);
+		for (int j = 0; j < m_EmEffect[i].m_effectPassCount; j++) {
+			if (m_framebufferID[m_EmEffect[i].m_effectPass[j].m_passTarget] != -1) {
+				glBindBuffer(GL_FRAMEBUFFER, m_framebufferID[m_EmEffect[i].m_effectPass[j].m_passTarget]);
+			}
+			else {
+				glBindBuffer(GL_FRAMEBUFFER, 0);
+			}
 			glDisable(GL_DEPTH_TEST);
 			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -185,22 +194,22 @@ void EffectsManager::Draw(Matrix mvp, Vector3 camPos, ESContext *esContext) {
 			{
 				glActiveTexture(GL_TEXTURE0+k);
 				string tempPath = "u_Texture" + to_string(k);
-				glBindTexture(GL_TEXTURE_2D, m_EmEffect[i].m_effectPass[j].m_passColorTextureID[k]);
+				glBindTexture(GL_TEXTURE_2D, m_colorTexID[m_EmEffect[i].m_effectPass[j].m_passColorTextureID[k]]);
 				int iTextureLoc = glGetUniformLocation(m_effectShaders[m_EmEffect[i].m_effectPass[j].m_passShaderID].program, &tempPath[0]);
 				if (iTextureLoc != -1)
 				{
-					glUniform1i(iTextureLoc, 0);
+					glUniform1i(iTextureLoc, 0+k);
 				}
 			}
 			for (int l = 0; l < m_EmEffect[i].m_effectPass[j].m_passDepthTextureCount; l++)
 			{
 				glActiveTexture(GL_TEXTURE0 + m_EmEffect[i].m_effectPass[j].m_passColorTextureCount +l);
-				string tempPath = "u_Texture" + to_string(l);
-				glBindTexture(GL_TEXTURE_2D, m_EmEffect[i].m_effectPass[j].m_passDepthTextureID[l]);
+				string tempPath = "u_Texture" + to_string(m_EmEffect[i].m_effectPass[j].m_passColorTextureCount+l);
+				glBindTexture(GL_TEXTURE_2D, m_depthTexID[m_EmEffect[i].m_effectPass[j].m_passDepthTextureID[l]]);
 				int iDepthTextureLoc = glGetUniformLocation(m_effectShaders[m_EmEffect[i].m_effectPass[j].m_passShaderID].program, &tempPath[0]);
 				if (iDepthTextureLoc != -1)
 				{
-					glUniform1i(iDepthTextureLoc, 0);
+					glUniform1i(iDepthTextureLoc, m_EmEffect[i].m_effectPass[j].m_passColorTextureCount+l);
 				}
 			}
 			unsigned int stepUniform;
