@@ -1,4 +1,4 @@
 # OpenGL-Tutorial
 My attempt learning OpenGL from scratch
 
-My first Git Commit
+My first Bug Commit
