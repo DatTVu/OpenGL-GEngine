@@ -1,5 +1,5 @@
-# OpenGL-Tutorial
-My attempt at learning OpenGL from scratch
+# OpenGL From Scratch
+My attempt at learning OpenGL from scratch in 2019. There were tons of hard-coding. There was no CMake to manage builds. The project structure was an absolute mess. In 2025, I embarked on a journey to make a game engine from scratch again. This time, the rendering pipeline will first support Vulkan. I will port OpenGL to the engine later. The new project will have CMake as well as a bit more organized structure. Please refer to my Vulkan engine repo. :)
 
 # Generating Terrain and Sampling Terrain Texture
 <img width="954" height="744" alt="terrain" src="https://github.com/user-attachments/assets/9fed694b-7f97-4613-b91d-927afa312c70" />
